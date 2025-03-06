@@ -12,3 +12,11 @@ DEFAULT_LANGUAGE = "en"
 # Supported languages.  Must be a subset of languages that present in the `locales` directory.  Default is a tuple that
 # contains all available languages.
 SUPPORTED_LANGUAGES = ("en", "ru")
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Data fetching
+#
+# Whether to start fetching data automatically when the bot is launched.  Default is False.
+FETCHING_START_AUTOMATICALLY = False
+# Fetching interval in minutes.  Default is 5.
+FETCHING_INTERVAL_MINUTES = 5

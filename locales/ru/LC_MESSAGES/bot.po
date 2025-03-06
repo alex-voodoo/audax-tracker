@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-06 21:59+0100\n"
+"POT-Creation-Date: 2025-03-06 23:26+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -18,11 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot.py:37
+#: bot.py:44
 msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
 msgstr "Обновить список участников"
 
-#: bot.py:56
+#: bot.py:47
+msgid "BUTTON_ADMIN_STOP_FETCHING"
+msgstr "Остановить рассылку"
+
+#: bot.py:50
+msgid "BUTTON_ADMIN_START_FETCHING"
+msgstr "Запустить рассылку"
+
+#: bot.py:71
 msgid "MESSAGE_START"
 msgstr ""
 "Я сообщу, когда выбранные вами участники прибудут на КП.\n"
@@ -33,27 +41,35 @@ msgstr ""
 "/remove - убрать участника из списка\n"
 "/status - показать статус всех участников из вашего списка"
 
-#: bot.py:71
+#: bot.py:86
 msgid "MESSAGE_ADMIN_START"
 msgstr "Нажмите, чтобы обновить список участников"
 
-#: bot.py:88
+#: bot.py:107
 msgid "MESSAGE_ADMIN_RELOADING_PARTICIPANTS"
 msgstr "Запрашиваю список участников"
 
-#: bot.py:135
+#: bot.py:111
+msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
+msgstr "Рассылка остановлена"
+
+#: bot.py:115
+msgid "MESSAGE_ADMIN_FETCHING_STARTED"
+msgstr "Рассылка запущена"
+
+#: bot.py:162
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "Что-то сломалось (во мне). Я сообщу моему администратору."
 
-#: bot.py:142
+#: bot.py:196
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: bot.py:143
+#: bot.py:197
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: bot.py:144
+#: bot.py:198
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 

@@ -22,7 +22,8 @@ from common import db, i18n
 # Commands, sequences, and responses
 COMMAND_START, COMMAND_HELP, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS, COMMAND_ADMIN = (
     "start", "help", "add", "remove", "status", "admin")
-ADMIN_RELOAD_PARTICIPANTS = "admin-load-participants"
+ADMIN_RELOAD_PARTICIPANTS, ADMIN_STOP_FETCHING, ADMIN_START_FETCHING = (
+    "admin-load-participants", "admin-stop-fetching", "admin-start-fetching")
 
 # Configure logging
 # Set higher logging level for httpx to avoid all GET and POST requests being logged.
@@ -32,10 +33,24 @@ logging.basicConfig(format="[%(asctime)s %(levelname)s %(name)s %(filename)s:%(l
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+periodic_fetching_job = None
+
 
 def get_admin_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(((InlineKeyboardButton(i18n.default().gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
-                                                       callback_data=ADMIN_RELOAD_PARTICIPANTS),),), )
+    global periodic_fetching_job
+
+    trans = i18n.default()
+
+    button_reload_participants = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
+                                                      callback_data=ADMIN_RELOAD_PARTICIPANTS)
+    if periodic_fetching_job:
+        button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_STOP_FETCHING"),
+                                                      callback_data=ADMIN_STOP_FETCHING)
+    else:
+        button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_START_FETCHING"),
+                                                      callback_data=ADMIN_START_FETCHING)
+
+    return InlineKeyboardMarkup(((button_reload_participants,), (button_toggle_fetching,)), )
 
 
 async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -72,6 +87,10 @@ async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYP
                                    reply_markup=get_admin_keyboard())
 
 
+def is_admin_query(data) -> bool:
+    return data in (ADMIN_RELOAD_PARTICIPANTS, ADMIN_START_FETCHING, ADMIN_STOP_FETCHING)
+
+
 async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     user = query.from_user
@@ -86,6 +105,14 @@ async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if query.data == ADMIN_RELOAD_PARTICIPANTS:
         await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_PARTICIPANTS"),
+                                      reply_markup=get_admin_keyboard())
+    elif query.data == ADMIN_STOP_FETCHING:
+        stop_fetching(context.application)
+        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED"),
+                                      reply_markup=get_admin_keyboard())
+    elif query.data == ADMIN_START_FETCHING:
+        start_fetching(context.application)
+        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STARTED"),
                                       reply_markup=get_admin_keyboard())
 
 
@@ -135,6 +162,33 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
     await message.reply_text(i18n.trans(user).gettext("MESSAGE_DM_INTERNAL_ERROR"))
 
 
+async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:
+    await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID, text='Fetching')
+
+
+def start_fetching(application: Application) -> None:
+    global periodic_fetching_job
+
+    if periodic_fetching_job:
+        logger.error("Called start_fetching() but already fetching!")
+        return
+
+    periodic_fetching_job = application.job_queue.run_repeating(periodic_fetch_data_and_notify_subscribers,
+                                                                interval=60 * settings.FETCHING_INTERVAL_MINUTES,
+                                                                first=10)
+
+
+def stop_fetching(application: Application) -> None:
+    global periodic_fetching_job
+
+    if not periodic_fetching_job:
+        logger.error("Called stop_fetching() but not fetching!")
+        return
+
+    periodic_fetching_job.schedule_removal()
+    periodic_fetching_job = None
+
+
 async def post_init(application: Application) -> None:
     trans = i18n.default()
 
@@ -154,9 +208,12 @@ def main() -> None:
     application.add_handler(CommandHandler(COMMAND_START, handle_command_start))
     application.add_handler(CommandHandler(COMMAND_HELP, handle_command_start))
     application.add_handler(CommandHandler(COMMAND_ADMIN, handle_command_admin))
-    application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=ADMIN_RELOAD_PARTICIPANTS))
+    application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=is_admin_query))
 
     application.add_error_handler(handle_error)
+
+    if settings.FETCHING_START_AUTOMATICALLY:
+        start_fetching(application)
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
