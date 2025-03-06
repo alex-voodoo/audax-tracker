@@ -12,12 +12,15 @@ import logging
 import traceback
 
 import httpx
-from telegram import Update
+from telegram import BotCommand,  Update
 from telegram.constants import ParseMode
-from telegram.ext import Application, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes
 
 import settings
 from common import db, i18n
+
+# Commands, sequences, and responses
+COMMAND_START, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS = "start", "add", "remove", "status"
 
 # Configure logging
 # Set higher logging level for httpx to avoid all GET and POST requests being logged.
@@ -26,6 +29,24 @@ logging.basicConfig(format="[%(asctime)s %(levelname)s %(name)s %(filename)s:%(l
                     level=logging.INFO, filename="bot.log")
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
+
+
+async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Welcome the user and show them the selection of options"""
+
+    message = update.effective_message
+    user = message.from_user
+
+    if settings.DEVELOPER_CHAT_ID == 0:
+        logger.info("Welcoming user {username} (chat ID {chat_id}), is this the admin?".format(username=user.username,
+                                                                                               chat_id=user.id))
+    elif user.id == settings.DEVELOPER_CHAT_ID:
+        logger.info("Welcoming the admin user {username} (chat ID {chat_id})".format(username=user.username,
+                                                                                     chat_id=user.id))
+    else:
+        logger.info("Welcoming user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
+
+    await message.reply_text(i18n.trans(user).gettext("MESSAGE_START"))
 
 
 async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -74,12 +95,25 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
     await message.reply_text(i18n.trans(user).gettext("MESSAGE_DM_INTERNAL_ERROR"))
 
 
+async def post_init(application: Application) -> None:
+    bot = application.bot
+
+    trans = i18n.default()
+
+    await bot.set_my_commands(
+        [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
+         BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
+         BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS"))])
+
+
 def main() -> None:
     """Run the bot"""
 
     db.connect()
 
-    application = Application.builder().token(settings.BOT_TOKEN).build()
+    application = Application.builder().token(settings.BOT_TOKEN).post_init(post_init).build()
+
+    application.add_handler(CommandHandler(COMMAND_START, handle_command_start))
 
     application.add_error_handler(handle_error)
 
