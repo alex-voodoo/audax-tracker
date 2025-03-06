@@ -12,9 +12,23 @@ db_connection: sqlite3.Connection
 
 db_logger = get_file_logger("db", "db.log")
 
+DB_FILENAME = "tracking.db"
+
 
 def apply_migrations(migrations_directory: Path) -> None:
-    conn = sqlite3.connect("people.db")
+    """Apply migrations prepared at the given path
+
+    Enumerates all files with .txt extension at the given path, and tries to execute each one as a sequence of SQL
+    statements, going through files in alphabetical order.
+
+    Every file should contain one or more SQL statements separated with semicolon.
+    """
+
+    if not migrations_directory.exists() or not migrations_directory.is_dir():
+        print("Directory {d} does not exist, not applying any migrations".format(d=migrations_directory))
+        return
+
+    conn = sqlite3.connect(DB_FILENAME)
     c = conn.cursor()
 
     c.execute("CREATE TABLE IF NOT EXISTS \"migrations\" ("
@@ -50,7 +64,7 @@ def connect() -> None:
     """Initialise the DB connection"""
 
     global db_connection
-    db_connection = sqlite3.connect(".db")
+    db_connection = sqlite3.connect(DB_FILENAME)
 
 
 def disconnect() -> None:

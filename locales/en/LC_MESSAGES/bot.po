@@ -1,0 +1,47 @@
+# English translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# Alexander Dunaev <alexander.dunaev@gmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
+"POT-Creation-Date: 2025-03-06 15:32+0100\n"
+"PO-Revision-Date: 2025-03-06 12:37+0100\n"
+"Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
+"Language: en\n"
+"Language-Team: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: bot.py:49
+msgid "MESSAGE_START"
+msgstr ""
+"I can notify you when participants of your choice arrive at controls.\n"
+"\n"
+"You can control me by sending these commands:\n"
+"\n"
+"/add - add a participant to track\n"
+"/remove - stop tracking a participant\n"
+"/status - show status of all participants in your list"
+
+#: bot.py:95
+msgid "MESSAGE_DM_INTERNAL_ERROR"
+msgstr "An internal error occurred.  I have notified my administrator about the error."
+
+#: bot.py:104
+msgid "COMMAND_DESCRIPTION_ADD"
+msgstr "add a participant to your list"
+
+#: bot.py:105
+msgid "COMMAND_DESCRIPTION_REMOVE"
+msgstr "remove a participant from your list"
+
+#: bot.py:106
+msgid "COMMAND_DESCRIPTION_STATUS"
+msgstr "show your list"
+
