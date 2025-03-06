@@ -1,13 +1,13 @@
-# Russian translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
+# Russian translations for Audax tracker Telegram bot project.
+# Copyright (C) 2025 Alexander Dunaev
+# This file is distributed under the same license as the Audax tracker Telegram bot project, see LICENSE.md in the project
 # Alexander Dunaev <alexander.dunaev@gmail.com>, 2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-06 15:32+0100\n"
+"POT-Creation-Date: 2025-03-06 21:59+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -18,10 +18,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot.py:49
+#: bot.py:37
+msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
+msgstr "Обновить список участников"
+
+#: bot.py:56
 msgid "MESSAGE_START"
 msgstr ""
-"\n"
 "Я сообщу, когда выбранные вами участники прибудут на КП.\n"
 "\n"
 "Вы можете воспользоваться следующими командами:\n"
@@ -30,19 +33,27 @@ msgstr ""
 "/remove - убрать участника из списка\n"
 "/status - показать статус всех участников из вашего списка"
 
-#: bot.py:95
+#: bot.py:71
+msgid "MESSAGE_ADMIN_START"
+msgstr "Нажмите, чтобы обновить список участников"
+
+#: bot.py:88
+msgid "MESSAGE_ADMIN_RELOADING_PARTICIPANTS"
+msgstr "Запрашиваю список участников"
+
+#: bot.py:135
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "Что-то сломалось (во мне). Я сообщу моему администратору."
 
-#: bot.py:104
+#: bot.py:142
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: bot.py:105
+#: bot.py:143
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: bot.py:106
+#: bot.py:144
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 
