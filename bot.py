@@ -12,15 +12,17 @@ import logging
 import traceback
 
 import httpx
-from telegram import BotCommand,  Update
+from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 
 import settings
 from common import db, i18n
 
 # Commands, sequences, and responses
-COMMAND_START, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS = "start", "add", "remove", "status"
+COMMAND_START, COMMAND_HELP, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS, COMMAND_ADMIN = (
+    "start", "help", "add", "remove", "status", "admin")
+ADMIN_RELOAD_PARTICIPANTS = "admin-load-participants"
 
 # Configure logging
 # Set higher logging level for httpx to avoid all GET and POST requests being logged.
@@ -29,6 +31,11 @@ logging.basicConfig(format="[%(asctime)s %(levelname)s %(name)s %(filename)s:%(l
                     level=logging.INFO, filename="bot.log")
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
+
+
+def get_admin_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(((InlineKeyboardButton(i18n.default().gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
+                                                       callback_data=ADMIN_RELOAD_PARTICIPANTS),),), )
 
 
 async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -41,12 +48,45 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
         logger.info("Welcoming user {username} (chat ID {chat_id}), is this the admin?".format(username=user.username,
                                                                                                chat_id=user.id))
     elif user.id == settings.DEVELOPER_CHAT_ID:
-        logger.info("Welcoming the admin user {username} (chat ID {chat_id})".format(username=user.username,
-                                                                                     chat_id=user.id))
+        logger.info(
+            "Welcoming the admin user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
     else:
         logger.info("Welcoming user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
 
     await message.reply_text(i18n.trans(user).gettext("MESSAGE_START"))
+
+
+async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show the admin menu"""
+
+    message = update.effective_message
+    user = message.from_user
+
+    if user.id != settings.DEVELOPER_CHAT_ID:
+        logging.info("User {username} tried to invoke the admin UI".format(username=user.username))
+        return
+
+    trans = i18n.default()
+
+    await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_ADMIN_START"),
+                                   reply_markup=get_admin_keyboard())
+
+
+async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    user = query.from_user
+
+    if user.id != settings.DEVELOPER_CHAT_ID:
+        logging.error("User {username} is not listed as administrator!".format(username=user.username))
+        return
+
+    await query.answer()
+
+    trans = i18n.default()
+
+    if query.data == ADMIN_RELOAD_PARTICIPANTS:
+        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_PARTICIPANTS"),
+                                      reply_markup=get_admin_keyboard())
 
 
 async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -96,11 +136,9 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 async def post_init(application: Application) -> None:
-    bot = application.bot
-
     trans = i18n.default()
 
-    await bot.set_my_commands(
+    await application.bot.set_my_commands(
         [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
          BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
          BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS"))])
@@ -114,10 +152,12 @@ def main() -> None:
     application = Application.builder().token(settings.BOT_TOKEN).post_init(post_init).build()
 
     application.add_handler(CommandHandler(COMMAND_START, handle_command_start))
+    application.add_handler(CommandHandler(COMMAND_HELP, handle_command_start))
+    application.add_handler(CommandHandler(COMMAND_ADMIN, handle_command_admin))
+    application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=ADMIN_RELOAD_PARTICIPANTS))
 
     application.add_error_handler(handle_error)
 
-    # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
     db.disconnect()
