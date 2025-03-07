@@ -6,7 +6,7 @@ import os
 import sqlite3
 from pathlib import Path
 
-from common.log import get_file_logger
+from common.log import get_file_logger, LogTime
 
 db_connection: sqlite3.Connection
 
@@ -71,3 +71,26 @@ def disconnect() -> None:
     """Terminate the DB connection"""
 
     db_connection.close()
+
+
+def is_fetching() -> bool:
+    """Return whether the current state is fetching"""
+
+    with LogTime("SELECT is_fetching FROM state", db_logger):
+        c = db_connection.cursor()
+
+        for record in c.execute("SELECT is_fetching FROM state"):
+            return record[0] != 0
+
+        raise "DB corrupt: no state record"
+
+
+def set_is_fetching(is_fetching: bool) -> None:
+    """Sets the fetching state"""
+
+    with LogTime("UPDATE state(is_fetching)", db_logger):
+        c = db_connection.cursor()
+
+        c.execute("UPDATE state SET is_fetching={}".format(1 if is_fetching else 0))
+
+        db_connection.commit()

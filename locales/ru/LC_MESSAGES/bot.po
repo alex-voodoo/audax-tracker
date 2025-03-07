@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-06 23:26+0100\n"
+"POT-Creation-Date: 2025-03-07 12:21+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -61,15 +61,15 @@ msgstr "Рассылка запущена"
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "Что-то сломалось (во мне). Я сообщу моему администратору."
 
-#: bot.py:196
+#: bot.py:200
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: bot.py:197
+#: bot.py:201
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: bot.py:198
+#: bot.py:202
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 

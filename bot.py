@@ -107,7 +107,7 @@ async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_PARTICIPANTS"),
                                       reply_markup=get_admin_keyboard())
     elif query.data == ADMIN_STOP_FETCHING:
-        stop_fetching(context.application)
+        stop_fetching()
         await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED"),
                                       reply_markup=get_admin_keyboard())
     elif query.data == ADMIN_START_FETCHING:
@@ -163,7 +163,7 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:
-    await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID, text='Fetching')
+    pass
 
 
 def start_fetching(application: Application) -> None:
@@ -177,8 +177,10 @@ def start_fetching(application: Application) -> None:
                                                                 interval=60 * settings.FETCHING_INTERVAL_MINUTES,
                                                                 first=10)
 
+    db.set_is_fetching(True)
 
-def stop_fetching(application: Application) -> None:
+
+def stop_fetching() -> None:
     global periodic_fetching_job
 
     if not periodic_fetching_job:
@@ -187,6 +189,8 @@ def stop_fetching(application: Application) -> None:
 
     periodic_fetching_job.schedule_removal()
     periodic_fetching_job = None
+
+    db.set_is_fetching(False)
 
 
 async def post_init(application: Application) -> None:
@@ -212,8 +216,11 @@ def main() -> None:
 
     application.add_error_handler(handle_error)
 
-    if settings.FETCHING_START_AUTOMATICALLY:
+    if db.is_fetching():
+        logger.info("Last state is: fetching, starting")
         start_fetching(application)
+    else:
+        logger.info("Last state is: not fetching, staying idle")
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
