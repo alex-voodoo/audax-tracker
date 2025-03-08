@@ -1,7 +1,7 @@
 """
 Database stuff
 """
-
+import datetime
 import os
 import sqlite3
 from pathlib import Path
@@ -94,3 +94,15 @@ def set_is_fetching(is_fetching: bool) -> None:
         c.execute("UPDATE state SET is_fetching={}".format(1 if is_fetching else 0))
 
         db_connection.commit()
+
+
+def last_successful_fetch() -> datetime.datetime:
+    """Return whether the current state is fetching"""
+
+    with LogTime("SELECT last_successful_fetch FROM state", db_logger):
+        c = db_connection.cursor()
+
+        for record in c.execute("SELECT last_successful_fetch FROM state"):
+            return datetime.datetime.fromisoformat(record[0]) if record[0] is not None else None
+
+        raise "DB corrupt: no state record"
