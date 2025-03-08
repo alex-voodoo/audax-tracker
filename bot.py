@@ -10,8 +10,10 @@ import html
 import json
 import logging
 import traceback
+import datetime
 
 import httpx
+import requests
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
@@ -34,6 +36,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 periodic_fetching_job = None
+last_successful_fetch = None
 
 
 def get_admin_keyboard() -> InlineKeyboardMarkup:
@@ -119,12 +122,6 @@ async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Log the error and send a telegram message to notify the developer"""
 
-    if not isinstance(update, Update):
-        logger.error("Unexpected type of update: {}".format(type(update)))
-        return
-
-    user = update.effective_message.from_user
-
     exception = context.error
 
     if isinstance(exception, httpx.RemoteProtocolError):
@@ -151,19 +148,30 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
     # Finally, send the message
     await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID, text=error_message, parse_mode=ParseMode.HTML)
 
-    if update.message:
-        message = update.message
-    elif update.callback_query:
-        message = update.callback_query.message
-    else:
-        logger.error("Unexpected state of the update: {}".format(update_str))
-        return
-
-    await message.reply_text(i18n.trans(user).gettext("MESSAGE_DM_INTERNAL_ERROR"))
+    if isinstance(update, Update) and update.effective_message:
+        await update.effective_message.reply_text(
+            i18n.trans(update.effective_message.from_user).gettext("MESSAGE_DM_INTERNAL_ERROR"))
 
 
 async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:
-    pass
+    global last_successful_fetch
+
+    try:
+        if not last_successful_fetch:
+            last_successful_fetch = db.last_successful_fetch()
+        request = {
+            "token": settings.FETCH_TOKEN,
+            "since": last_successful_fetch.isoformat() if last_successful_fetch else None
+        }
+        logger.info("Sending request: {}".format(request))
+        response = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
+        logger.info("Got response: {}".format(response))
+    except Exception as e:
+        stop_fetching()
+        logger.error(e)
+        await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID,
+                                       text="{} raised when trying to fetch data, stopped fetching.".format(
+                                           html.escape(str(type(e)))), parse_mode=ParseMode.HTML)
 
 
 def start_fetching(application: Application) -> None:
