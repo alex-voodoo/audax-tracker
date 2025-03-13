@@ -10,22 +10,23 @@ import html
 import json
 import logging
 import traceback
-import datetime
 
 import httpx
 import requests
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
-from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
+from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler, \
+    MessageHandler, filters
 
 import settings
-from common import db, i18n
+from common import state, i18n
 
 # Commands, sequences, and responses
 COMMAND_START, COMMAND_HELP, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS, COMMAND_ADMIN = (
     "start", "help", "add", "remove", "status", "admin")
-ADMIN_RELOAD_PARTICIPANTS, ADMIN_STOP_FETCHING, ADMIN_START_FETCHING = (
-    "admin-load-participants", "admin-stop-fetching", "admin-start-fetching")
+ADMIN_RELOAD_CONFIGURATION, ADMIN_STOP_FETCHING, ADMIN_START_FETCHING = (
+    "admin-reload-configuration", "admin-stop-fetching", "admin-start-fetching")
+TYPING_FRAME_PLATE_NUMBER = 1
 
 # Configure logging
 # Set higher logging level for httpx to avoid all GET and POST requests being logged.
@@ -36,7 +37,6 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 periodic_fetching_job = None
-last_successful_fetch = None
 
 
 def get_admin_keyboard() -> InlineKeyboardMarkup:
@@ -45,7 +45,7 @@ def get_admin_keyboard() -> InlineKeyboardMarkup:
     trans = i18n.default()
 
     button_reload_participants = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
-                                                      callback_data=ADMIN_RELOAD_PARTICIPANTS)
+                                                      callback_data=ADMIN_RELOAD_CONFIGURATION)
     if periodic_fetching_job:
         button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_STOP_FETCHING"),
                                                       callback_data=ADMIN_STOP_FETCHING)
@@ -91,7 +91,7 @@ async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYP
 
 
 def is_admin_query(data) -> bool:
-    return data in (ADMIN_RELOAD_PARTICIPANTS, ADMIN_START_FETCHING, ADMIN_STOP_FETCHING)
+    return data in (ADMIN_RELOAD_CONFIGURATION, ADMIN_START_FETCHING, ADMIN_STOP_FETCHING)
 
 
 async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -106,9 +106,17 @@ async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     trans = i18n.default()
 
-    if query.data == ADMIN_RELOAD_PARTICIPANTS:
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_PARTICIPANTS"),
+    if query.data == ADMIN_RELOAD_CONFIGURATION:
+        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_CONFIGURATION"),
                                       reply_markup=get_admin_keyboard())
+        if await reload_configuration():
+            await query.edit_message_text(
+                trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}").format(
+                    control_count=len(state.controls()), participant_count=len(state.participants())),
+                reply_markup=get_admin_keyboard())
+        else:
+            await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"),
+                                          reply_markup=get_admin_keyboard())
     elif query.data == ADMIN_STOP_FETCHING:
         stop_fetching()
         await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED"),
@@ -154,18 +162,33 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:
-    global last_successful_fetch
-
     try:
-        if not last_successful_fetch:
-            last_successful_fetch = db.last_successful_fetch()
-        request = {
-            "token": settings.FETCH_TOKEN,
-            "since": last_successful_fetch.isoformat() if last_successful_fetch else None
-        }
+        request = {"token": settings.REMOTE_ENDPOINT_AUTH_TOKEN, "method": "get-tracking-updates",
+                   "since": state.last_successful_fetch()}
         logger.info("Sending request: {}".format(request))
-        response = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
-        logger.info("Got response: {}".format(response))
+        response_raw = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
+        if response_raw.status_code != 200:
+            logger.info("Got HTTP error response: {c} {r}".format(c=response_raw.status_code, r=response_raw.reason))
+            return
+
+        response = response_raw.json()
+        if not response["success"]:
+            logger.info("Got API error response: {}".format(response["error_message"]))
+            return
+
+        logger.info(response)
+        recipients = {}
+        for update in response["updates"]:
+            for tg_id, subscriptions in state.subscriptions():
+                if update["frame_plate_number"] in subscriptions:
+                    if tg_id not in recipients:
+                        recipients[tg_id] = []
+                    recipients[tg_id].append(update)
+
+        logger.info(recipients)
+
+        state.set_last_successful_fetch(response["next_since"])
+
     except Exception as e:
         stop_fetching()
         logger.error(e)
@@ -185,7 +208,7 @@ def start_fetching(application: Application) -> None:
                                                                 interval=60 * settings.FETCHING_INTERVAL_MINUTES,
                                                                 first=10)
 
-    db.set_is_fetching(True)
+    state.set_is_fetching(True)
 
 
 def stop_fetching() -> None:
@@ -198,7 +221,87 @@ def stop_fetching() -> None:
     periodic_fetching_job.schedule_removal()
     periodic_fetching_job = None
 
-    db.set_is_fetching(False)
+    state.set_is_fetching(False)
+
+
+async def reload_configuration() -> bool:
+    try:
+        request = {"token": settings.REMOTE_ENDPOINT_AUTH_TOKEN, "method": "get-configuration"}
+        logger.info("Sending request: {}".format(request))
+        response_raw = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
+        if response_raw.status_code != 200:
+            logger.info("Got HTTP error response: {c} {r}".format(c=response_raw.status_code, r=response_raw.reason))
+            return False
+
+        response = response_raw.json()
+        if not response["success"]:
+            logger.info("Got API error response: {}".format(response["error_message"]))
+            return False
+
+        logger.info(response)
+
+        state.set_controls(response["controls"])
+        state.set_participants(response["participants"])
+
+        return True
+
+    except Exception as e:
+        logger.error(e)
+        return False
+
+
+async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
+        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"), parse_mode=ParseMode.HTML)
+
+    context.user_data["action"] = COMMAND_ADD
+
+    return TYPING_FRAME_PLATE_NUMBER
+
+
+async def handle_command_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
+        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"), parse_mode=ParseMode.HTML)
+
+    context.user_data["action"] = COMMAND_REMOVE
+
+    return TYPING_FRAME_PLATE_NUMBER
+
+
+async def received_frame_plate_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """Handle the received frame plate number and end one of conversations where it was requested"""
+
+    user = update.effective_user
+    frame_plate_number = update.message.text
+
+    if not state.has_participant(frame_plate_number):
+        await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NO_SUCH_PARTICIPANT"))
+    elif context.user_data["action"] == COMMAND_ADD:
+        if state.has_subscription(str(user.id), frame_plate_number):
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"))
+        else:
+            state.add_subscription(str(user.id), update.message.text)
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_SUBSCRIPTION_ADDED"))
+    elif context.user_data["action"] == COMMAND_REMOVE:
+        if not state.has_subscription(str(user.id), frame_plate_number):
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
+        else:
+            state.remove_subscription(str(user.id), update.message.text)
+            await context.bot.send_message(chat_id=user.id,
+                                           text=i18n.trans(user).gettext("MESSAGE_SUBSCRIPTION_REMOVED"))
+    else:
+        logger.error("Unknown action {}".format(context.user_data["action"]))
+
+    context.user_data.clear()
+    return ConversationHandler.END
+
+
+async def abort_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    user = update.effective_user
+    context.user_data.clear()
+    await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ABORT"))
+
+    return ConversationHandler.END
 
 
 async def post_init(application: Application) -> None:
@@ -213,26 +316,32 @@ async def post_init(application: Application) -> None:
 def main() -> None:
     """Run the bot"""
 
-    db.connect()
-
     application = Application.builder().token(settings.BOT_TOKEN).post_init(post_init).build()
 
     application.add_handler(CommandHandler(COMMAND_START, handle_command_start))
     application.add_handler(CommandHandler(COMMAND_HELP, handle_command_start))
+
+    application.add_handler(ConversationHandler(entry_points=[CommandHandler(COMMAND_ADD, handle_command_add)], states={
+        TYPING_FRAME_PLATE_NUMBER: [MessageHandler(filters.TEXT & (~ filters.COMMAND), received_frame_plate_number)]},
+                                                fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
+    application.add_handler(ConversationHandler(entry_points=[CommandHandler(COMMAND_REMOVE, handle_command_remove)],
+                                                states={TYPING_FRAME_PLATE_NUMBER: [
+                                                    MessageHandler(filters.TEXT & (~ filters.COMMAND),
+                                                                   received_frame_plate_number)]},
+                                                fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
+
     application.add_handler(CommandHandler(COMMAND_ADMIN, handle_command_admin))
     application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=is_admin_query))
 
     application.add_error_handler(handle_error)
 
-    if db.is_fetching():
+    if state.is_fetching():
         logger.info("Last state is: fetching, starting")
         start_fetching(application)
     else:
         logger.info("Last state is: not fetching, staying idle")
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
-
-    db.disconnect()
 
 
 if __name__ == "__main__":

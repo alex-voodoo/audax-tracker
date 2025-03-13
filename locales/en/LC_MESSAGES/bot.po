@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-07 12:21+0100\n"
+"POT-Creation-Date: 2025-03-13 16:55+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot.py:44
+#: bot.py:47
 msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
 msgstr "Reload participants"
 
-#: bot.py:47
+#: bot.py:50
 msgid "BUTTON_ADMIN_STOP_FETCHING"
 msgstr "Stop sending notifications"
 
-#: bot.py:50
+#: bot.py:53
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Start sending notifications"
 
-#: bot.py:71
+#: bot.py:74
 msgid "MESSAGE_START"
 msgstr ""
 "I can notify you when participants of your choice arrive at controls.\n"
@@ -41,35 +41,76 @@ msgstr ""
 "/remove - stop tracking a participant\n"
 "/status - show status of all participants in your list"
 
-#: bot.py:86
+#: bot.py:89
 msgid "MESSAGE_ADMIN_START"
 msgstr "Press to reload list of participants"
 
-#: bot.py:107
-msgid "MESSAGE_ADMIN_RELOADING_PARTICIPANTS"
-msgstr "Requesting the list of participants"
+#: bot.py:110
+msgid "MESSAGE_ADMIN_RELOADING_CONFIGURATION"
+msgstr "Reloading controls and participants"
 
-#: bot.py:111
+#: bot.py:114
+#, python-brace-format
+msgid "MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}"
+msgstr "Loaded {control_count} controls and {participant_count} participants"
+
+#: bot.py:118
+msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"
+msgstr "An error occurred while loading data.  See logs for more details."
+
+#: bot.py:122
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Stopped sending notifications"
 
-#: bot.py:115
+#: bot.py:126
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Started sending notifications"
 
-#: bot.py:162
+#: bot.py:161
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "An internal error occurred.  I have notified my administrator about the error."
 
-#: bot.py:200
+#: bot.py:246
+msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
+msgstr "Please enter frame plate number of a participant."
+
+#: bot.py:255
+msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
+msgstr "Please enter frame plate number of a participant."
+
+#: bot.py:269
+msgid "MESSAGE_NO_SUCH_PARTICIPANT"
+msgstr "No participant registered with such number."
+
+#: bot.py:272
+msgid "MESSAGE_ALREADY_SUBSCRIBED"
+msgstr "You have this participant in your list already."
+
+#: bot.py:275
+msgid "MESSAGE_SUBSCRIPTION_ADDED"
+msgstr "The participant is added to your list."
+
+#: bot.py:278
+msgid "MESSAGE_NOT_SUBSCRIBED"
+msgstr "You do not have this participant in your list."
+
+#: bot.py:282
+msgid "MESSAGE_SUBSCRIPTION_REMOVED"
+msgstr "The participant is removed from your list."
+
+#: bot.py:293
+msgid "MESSAGE_ABORT"
+msgstr "Cancelled.  Please select a command."
+
+#: bot.py:302
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:201
+#: bot.py:303
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:202
+#: bot.py:304
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
