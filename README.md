@@ -28,4 +28,4 @@ Do not forget to restart the bot after you have changed the settings!
 
 ## Updating
 
-To get the newest version of the bot, stop it, update your working copy by running `git pull`, then update Python packages by running `pip install -r requirements.txt`, and update the DB schema by running `python migrate.py`.
+To get the newest version of the bot, stop it, update your working copy by running `git pull`, then update Python packages by running `pip install -r requirements.txt`.
