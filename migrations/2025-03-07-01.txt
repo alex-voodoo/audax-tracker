@@ -1,7 +1,0 @@
-CREATE TABLE "state" (
-	"last_successful_fetch"	DATETIME,
-	"is_fetching"	INTEGER
-);
-
-INSERT INTO state(last_successful_fetch, is_fetching)
-VALUES(NULL, 0);
