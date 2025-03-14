@@ -3,14 +3,19 @@ Database stuff
 """
 import json
 
+from telegram import User
+
+import settings
+
 _STATE_FILENAME = "state.json"
 
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
 _state = {}
 
 # Keys used in the state object
-_PARTICIPANTS, _CONTROLS, _SUBSCRIPTIONS, _FEED_STATUS, _IS_FETCHING, _LAST_SUCCESSFUL_FETCH = (
-    "participants", "controls", "subscriptions", "feed_status", "is_fetching", "last_successful_fetch")
+_PARTICIPANTS, _CONTROLS, _SUBSCRIPTIONS, _FEED_STATUS, _IS_FETCHING, _LAST_SUCCESSFUL_FETCH, _LANG, _NUMBERS = (
+    "participants", "controls", "subscriptions", "feed_status", "is_fetching", "last_successful_fetch", "lang",
+    "numbers")
 
 
 def _save() -> None:
@@ -30,7 +35,7 @@ def _maybe_load() -> None:
             _state = json.load(json_file)
     except FileNotFoundError:
         # First run, no problem, creating an empty state.
-        _state = {_PARTICIPANTS: [], _CONTROLS: {}, _SUBSCRIPTIONS: {},
+        _state = {_PARTICIPANTS: {}, _CONTROLS: {}, _SUBSCRIPTIONS: {},
                   _FEED_STATUS: {_IS_FETCHING: False, _LAST_SUCCESSFUL_FETCH: None}}
 
 
@@ -75,7 +80,7 @@ def set_controls(new_value: list) -> None:
     _save()
 
 
-def participants() -> list:
+def participants() -> dict:
     _maybe_load()
     return _state[_PARTICIPANTS]
 
@@ -91,12 +96,16 @@ def subscriptions() -> dict:
     return _state[_SUBSCRIPTIONS]
 
 
-def add_subscription(tg_id: str, frame_plate_number: str) -> None:
+def add_subscription(user: User, frame_plate_number: str) -> None:
     global _state
+
+    tg_id = str(user.id)
     if tg_id not in _state[_SUBSCRIPTIONS]:
-        _state[_SUBSCRIPTIONS][tg_id] = []
-    if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id]:
-        _state[_SUBSCRIPTIONS][tg_id].append(frame_plate_number)
+        _state[_SUBSCRIPTIONS][tg_id] = {_LANG: "", _NUMBERS: []}
+    _state[_SUBSCRIPTIONS][tg_id][
+        _LANG] = user.language_code if user.language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE
+    if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
+        _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].append(frame_plate_number)
     _save()
 
 
@@ -104,10 +113,10 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     global _state
     if tg_id not in _state[_SUBSCRIPTIONS]:
         return
-    if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id]:
+    if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         return
-    _state[_SUBSCRIPTIONS][tg_id].remove(frame_plate_number)
-    if not _state[_SUBSCRIPTIONS][tg_id]:
+    _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].remove(frame_plate_number)
+    if not _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         del _state[_SUBSCRIPTIONS][tg_id]
     _save()
 

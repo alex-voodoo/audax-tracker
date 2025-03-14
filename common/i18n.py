@@ -8,7 +8,6 @@ from telegram import User
 
 import settings
 
-
 _last_used_lang = None
 _last_used_trans = None
 
@@ -17,6 +16,13 @@ def default():
     """Get the default translator"""
 
     return gettext.translation("bot", localedir="locales", languages=[settings.DEFAULT_LANGUAGE])
+
+
+def for_lang(language_code: str):
+    """Get the translator for `language_code` if it exists"""
+
+    return gettext.translation("bot", localedir="locales", languages=[
+        language_code if language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE])
 
 
 def trans(user: User):

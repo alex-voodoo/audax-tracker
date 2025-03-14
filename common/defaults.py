@@ -12,6 +12,8 @@ DEFAULT_LANGUAGE = "en"
 # Supported languages.  Must be a subset of languages that present in the `locales` directory.  Default is a tuple that
 # contains all available languages.
 SUPPORTED_LANGUAGES = ("en", "ru")
+# Time zone in which the event is held, and in which all dates and times are presented.  Default is "UTC".
+TIME_ZONE = "UTC"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Data fetching

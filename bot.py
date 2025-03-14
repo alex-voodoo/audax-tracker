@@ -5,18 +5,20 @@ This is the main script that contains the entry point of the bot.  Execute this 
 
 See README.md for details.
 """
-
+import datetime
 import html
 import json
 import logging
 import traceback
+from zoneinfo import ZoneInfo
 
 import httpx
 import requests
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
-from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler, \
-    MessageHandler, filters
+from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler,
+                          filters, \
+    MessageHandler)
 
 import settings
 from common import state, i18n
@@ -177,15 +179,36 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
             return
 
         logger.info(response)
-        recipients = {}
+        packages = {}
         for update in response["updates"]:
-            for tg_id, subscriptions in state.subscriptions():
-                if update["frame_plate_number"] in subscriptions:
-                    if tg_id not in recipients:
-                        recipients[tg_id] = []
-                    recipients[tg_id].append(update)
+            for tg_id, subscription in state.subscriptions().items():
+                if update["frame_plate_number"] in subscription["numbers"]:
+                    if tg_id not in packages:
+                        packages[tg_id] = []
+                    packages[tg_id].append(update)
 
-        logger.info(recipients)
+        logger.info(packages)
+
+        def convert(tr, t) -> str:
+            if not t:
+                return tr.gettext("DNF")
+            return datetime.datetime.fromisoformat(t).astimezone(ZoneInfo(settings.TIME_ZONE)).strftime("%d %B %H:%M")
+
+        for tg_id, updates in packages.items():
+            checkins = []
+            lang = state.subscriptions()[tg_id]["lang"]
+            trans = i18n.for_lang(lang)
+            for update in sorted(updates, key=lambda u: int(u["frame_plate_number"])):
+                control = state.controls()[str(update["control"])]
+                checkins.append(trans.gettext(
+                    "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}").format(
+                    control_name=control["name"][lang], distance=control["distance"],
+                    frame_plate_number=update["frame_plate_number"],
+                    full_name=state.participants()[update["frame_plate_number"]],
+                    time=convert(trans, update["checkin_time"])))
+
+            await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
+                entries="\n".join(checkins)), parse_mode=ParseMode.HTML)
 
         state.set_last_successful_fetch(response["next_since"])
 
@@ -195,6 +218,7 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
         await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID,
                                        text="{} raised when trying to fetch data, stopped fetching.".format(
                                            html.escape(str(type(e)))), parse_mode=ParseMode.HTML)
+        raise
 
 
 def start_fetching(application: Application) -> None:
@@ -280,7 +304,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
         if state.has_subscription(str(user.id), frame_plate_number):
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"))
         else:
-            state.add_subscription(str(user.id), update.message.text)
+            state.add_subscription(user, update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_SUBSCRIPTION_ADDED"))
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
