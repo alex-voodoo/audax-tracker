@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-14 23:16+0100\n"
+"POT-Creation-Date: 2025-03-15 19:28+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -70,63 +70,63 @@ msgstr "Started sending notifications"
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "An internal error occurred.  I have notified my administrator about the error."
 
-#: bot.py:194
+#: bot.py:191
 msgid "DNF"
 msgstr "DNF"
 
-#: bot.py:204
+#: bot.py:201
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "#{frame_plate_number} ({full_name}): {control_name} ({distance} km), {time}"
 
-#: bot.py:210
+#: bot.py:207
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
 
-#: bot.py:279
+#: bot.py:272
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: bot.py:288
+#: bot.py:281
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: bot.py:302
+#: bot.py:295
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: bot.py:305
+#: bot.py:298
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:308
+#: bot.py:301
 msgid "MESSAGE_SUBSCRIPTION_ADDED"
 msgstr "The participant is added to your list."
 
-#: bot.py:311
+#: bot.py:304
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:315
+#: bot.py:308
 msgid "MESSAGE_SUBSCRIPTION_REMOVED"
 msgstr "The participant is removed from your list."
 
-#: bot.py:326
+#: bot.py:319
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:335
+#: bot.py:328
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:336
+#: bot.py:329
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:337
+#: bot.py:330
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 

@@ -167,7 +167,6 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
     try:
         request = {"token": settings.REMOTE_ENDPOINT_AUTH_TOKEN, "method": "get-tracking-updates",
                    "since": state.last_successful_fetch()}
-        logger.info("Sending request: {}".format(request))
         response_raw = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
         if response_raw.status_code != 200:
             logger.info("Got HTTP error response: {c} {r}".format(c=response_raw.status_code, r=response_raw.reason))
@@ -178,7 +177,7 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
             logger.info("Got API error response: {}".format(response["error_message"]))
             return
 
-        logger.info(response)
+        logger.info("Got data response from the remote endpoint, preparing updates for the subscribers.")
         packages = {}
         for update in response["updates"]:
             for tg_id, subscription in state.subscriptions().items():
@@ -186,8 +185,6 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
                     if tg_id not in packages:
                         packages[tg_id] = []
                     packages[tg_id].append(update)
-
-        logger.info(packages)
 
         def convert(tr, t) -> str:
             if not t:
@@ -214,10 +211,6 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
 
     except Exception as e:
         stop_fetching()
-        logger.error(e)
-        await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID,
-                                       text="{} raised when trying to fetch data, stopped fetching.".format(
-                                           html.escape(str(type(e)))), parse_mode=ParseMode.HTML)
         raise
 
 
