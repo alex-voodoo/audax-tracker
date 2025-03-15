@@ -292,28 +292,51 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
     frame_plate_number = update.message.text
 
     if not state.has_participant(frame_plate_number):
-        await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NO_SUCH_PARTICIPANT"))
+        await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NO_SUCH_PARTICIPANT"),
+                                       parse_mode=ParseMode.HTML)
     elif context.user_data["action"] == COMMAND_ADD:
         if state.has_subscription(str(user.id), frame_plate_number):
-            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"))
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"),
+                                           parse_mode=ParseMode.HTML)
         else:
             state.add_subscription(user, update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]),
+                                           parse_mode=ParseMode.HTML)
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
-            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"),
+                                           parse_mode=ParseMode.HTML)
         else:
             state.remove_subscription(str(user.id), update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]),
+                                           parse_mode=ParseMode.HTML)
     else:
         logger.error("Unknown action {}".format(context.user_data["action"]))
 
     context.user_data.clear()
     return ConversationHandler.END
+
+
+async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    trans = i18n.trans(user)
+    tg_id = str(user.id)
+
+    if tg_id not in state.subscriptions():
+        await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"),
+                                       parse_mode=ParseMode.HTML)
+    else:
+        items = [trans.gettext("MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}").format(frame_plate_number=p,
+                                                                                              full_name=
+                                                                                              state.participants()[p])
+                 for p in state.subscriptions()[tg_id]["numbers"]]
+        await context.bot.send_message(chat_id=user.id,
+                                       text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST {items}").format(
+                                           items="\n".join(items)), parse_mode=ParseMode.HTML)
 
 
 async def abort_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -349,6 +372,7 @@ def main() -> None:
                                                     MessageHandler(filters.TEXT & (~ filters.COMMAND),
                                                                    received_frame_plate_number)]},
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
+    application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
 
     application.add_handler(CommandHandler(COMMAND_ADMIN, handle_command_admin))
     application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=is_admin_query))

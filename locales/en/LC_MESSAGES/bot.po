@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-15 20:32+0100\n"
+"POT-Creation-Date: 2025-03-15 22:49+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -98,36 +98,53 @@ msgstr "Please enter frame plate number of a participant."
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: bot.py:298
+#: bot.py:299
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:302
+#: bot.py:304
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: bot.py:306
+#: bot.py:309
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:310
+#: bot.py:314
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: bot.py:322
+#: bot.py:330
+msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
+msgstr "Your list of participants is empty."
+
+#: bot.py:333
+#, python-brace-format
+msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
+msgstr "<strong>#{frame_plate_number}</strong> {full_name}"
+
+#: bot.py:338
+#, python-brace-format
+msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
+msgstr ""
+"Here is your list of participants:\n"
+"{items}"
+
+#: bot.py:345
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:331
+#: bot.py:354
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:332
+#: bot.py:355
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:333
+#: bot.py:356
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
+
