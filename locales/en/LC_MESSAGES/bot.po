@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-15 19:28+0100\n"
+"POT-Creation-Date: 2025-03-15 20:32+0100\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -102,31 +102,32 @@ msgstr "No participant registered with such number."
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:301
-msgid "MESSAGE_SUBSCRIPTION_ADDED"
-msgstr "The participant is added to your list."
+#: bot.py:302
+#, python-brace-format
+msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
+msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: bot.py:304
+#: bot.py:306
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:308
-msgid "MESSAGE_SUBSCRIPTION_REMOVED"
-msgstr "The participant is removed from your list."
+#: bot.py:310
+#, python-brace-format
+msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
+msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: bot.py:319
+#: bot.py:322
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:328
+#: bot.py:331
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:329
+#: bot.py:332
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:330
+#: bot.py:333
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
-

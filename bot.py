@@ -18,7 +18,7 @@ from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Upd
 from telegram.constants import ParseMode
 from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler,
                           filters, \
-    MessageHandler)
+                          MessageHandler)
 
 import settings
 from common import state, i18n
@@ -298,14 +298,17 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"))
         else:
             state.add_subscription(user, update.message.text)
-            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_SUBSCRIPTION_ADDED"))
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
+                "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}").format(
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
         else:
             state.remove_subscription(str(user.id), update.message.text)
-            await context.bot.send_message(chat_id=user.id,
-                                           text=i18n.trans(user).gettext("MESSAGE_SUBSCRIPTION_REMOVED"))
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
+                "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}").format(
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
     else:
         logger.error("Unknown action {}".format(context.user_data["action"]))
 
