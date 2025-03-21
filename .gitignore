@@ -2,6 +2,7 @@
 people.db
 __pycache__
 settings.py
+state.json
 venv
 *.log
 *.pot
