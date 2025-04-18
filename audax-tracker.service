@@ -1,0 +1,15 @@
+[Unit]
+Description=Audax tracker Telegram bot service
+
+[Service]
+WorkingDirectory=/usr/local/lib/audax-tracker/
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/usr/local/etc/audax-tracker/audax-tracker.env
+ExecStart=/usr/local/lib/audax-tracker/venv/bin/python /usr/local/lib/audax-tracker/bot.py
+StandardOutput=append:/var/log/audax-tracker.log
+StandardError=append:/var/log/audax-tracker.log
+
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

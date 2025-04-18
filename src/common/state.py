@@ -2,12 +2,14 @@
 Database stuff
 """
 import json
+import pathlib
 
 from telegram import User
 
-import settings
+from . import settings
 
-_STATE_FILENAME = "state.json"
+_STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE else pathlib.Path(
+    __file__).parent.parent / "state.json"
 
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
 _state = {}

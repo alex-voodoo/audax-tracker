@@ -1,5 +1,3 @@
-#!./venv/bin/python
-
 """
 This is the main script that contains the entry point of the bot.  Execute this file to run the bot.
 
@@ -9,6 +7,7 @@ import datetime
 import html
 import json
 import logging
+import os
 import traceback
 from zoneinfo import ZoneInfo
 
@@ -17,11 +16,9 @@ import requests
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
 from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler,
-                          filters, \
-                          MessageHandler)
+                          filters, MessageHandler)
 
-import settings
-from common import state, i18n
+from common import i18n, settings, state
 
 # Commands, sequences, and responses
 COMMAND_START, COMMAND_HELP, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS, COMMAND_ADMIN = (
@@ -34,7 +31,7 @@ TYPING_FRAME_PLATE_NUMBER = 1
 # Set higher logging level for httpx to avoid all GET and POST requests being logged.
 # noinspection SpellCheckingInspection
 logging.basicConfig(format="[%(asctime)s %(levelname)s %(name)s %(filename)s:%(lineno)d] %(message)s",
-                    level=logging.INFO, filename="bot.log")
+                    level=logging.INFO)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
@@ -358,6 +355,8 @@ async def post_init(application: Application) -> None:
 
 def main() -> None:
     """Run the bot"""
+
+    logger.info("The bot starts in {} mode".format("service" if settings.SERVICE_MODE else "direct"))
 
     application = Application.builder().token(settings.BOT_TOKEN).post_init(post_init).build()
 

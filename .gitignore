@@ -1,7 +1,7 @@
 .idea
-people.db
 __pycache__
-settings.py
+assets
+settings.yaml
 state.json
 venv
 *.log

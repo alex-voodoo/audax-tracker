@@ -14,15 +14,41 @@ Follow the [official documentation](https://core.telegram.org/bots#how-do-i-crea
 
 Now you need to configure your instance of the bot.  Follow these steps to complete this process:
 1. Open the command terminal and activate the virtual environment that you created above
-2. Run `python setup.py` and provide the essential configuration parameters: API token of your bot and the URL of your data endpoint when requested.  The script will render `settings.py` that is necessary for the bot to run.
-3. Run `python bot.py`.  The command should start the bot and run indefinitely.  Find your bot in Telegram and talk to it in private.  Initiate the conversation by clicking the Start button in the direct message chat.  The bot will respond with a welcome message.  Stop the bot by pressing `Ctrl+C` in the terminal.
-4. In the directory where you have your bot, find `bot.log`, open it, and find a log message: `"Welcoming user {username} (chat ID {chat_id}), is this the admin?"` where `username` should be your Telegram username.  Copy the chat ID, open `settings.py` and paste that number as the new value of the `DEVELOPER_CHAT_ID` parameter.
+2. Run `python setup.py` and provide the essential configuration parameters: API token of your bot and the URL of your data endpoint when requested.  The script will render `src/settings.yaml` that is necessary for the bot to run.
+3. Run `python src/bot.py`.  The command should start the bot and run indefinitely.  Find the bot in your Telegram client and talk to it in private.  Initiate the conversation by clicking the Start button in the direct message chat.  The bot will respond with a welcome message, and in the terminal where it is running you will see a log message: _Welcoming user {username} (chat ID {chat_id}), is this the admin?_ where `username` should be your Telegram username.  Copy the chat ID, open `src/settings.yaml` and paste that number as the new value of the `DEVELOPER_CHAT_ID` parameter.
+4. Stop the bot by pressing `Ctrl+C` in the terminal, then start it again and send the `/start` command to the bot from your Telegram client.  This time you should see another log message in the terminal where the bot is running: _Welcoming the admin user {username} (chat ID {chat_id})_, and also the bot should show the administrator's menu in response to the `/admin` command.
 
-Now the bot is ready to work.  You can start it by running `python bot.py` in a command terminal or adding it to some system auto-run.  The script will run indefinitely, unless something severe causes it to crash.  Should any non-fatal error occur in the bot, it will send error messages to you via private Telegram message.
+Now the bot is ready to work.  It can be launched directly by running `python src/bot.py` in a command terminal, and it will run indefinitely, unless a severe problem causes it to crash (unlikely).  Alternatively, it can be installed as a Linux system service (see below), in this mode, should a crash happen, the bot will be restarted by the system automatically.
+
+Should any non-fatal errors occur in the bot, it will send error messages to the administrator user via private Telegram messages.
+
+## Running the bot in direct mode
+
+The bot runs in direct mode if the `AUDAX_TRACKER_SERVICE_MODE` environment variable is not set or not equal to "1".
+
+In direct mode, the bot assumes that its configuration file and persistent state file are located in the same directory where its entry point script is located.
+
+To launch the bot, activate the Python virtual environment and run `python bot.py` in a command terminal.  Press `Ctrl+C` to stop it gracefully.
+
+To change settings of the bot, edit the configuration file, then restart the bot.
+
+## Running the bot as a Linux system service
+
+The bot can be registered as a Linux service daemon in a system that runs systemd.
+
+You will need superuser privileges to proceed.
+
+First configure the bot as explained above, then continue from here.
+
+Run `sudo make install` to install the systemd unit.  This will copy the bot program files to `/usr/local/lib/audax-tracker`, create the virtual Python environment there, and register the systemd unit named `audax-tracker`.  The bot runs in service mode if the `AUDAX_TRACKER_SERVICE_MODE` environment variable is set and is equal to "1", which is provided by the systemd unit configuration.
+
+In service mode, the bot loads the configuration file from `/usr/local/etc/audax-tracker/`, and writes its persistent state to `/var/local/audax-tracker/`.
+
+Start the service by running `sudo sustemctl start audax-tracker`, stop it by running `sudo sustemctl stop audax-tracker`.
 
 ## Configuration
 
-To tune your bot, read and edit `settings.py`.  Uncomment settings that you want to alter and put your values.
+To tune your bot, read and edit `src/settings.yaml`.  Uncomment settings that you want to alter and put your values.
 
 Do not forget to restart the bot after you have changed the settings!
 

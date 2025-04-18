@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-03-15 22:49+0100\n"
+"POT-Creation-Date: 2025-04-18 23:43+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot.py:49 common/admin.py:15
+#: bot.py:46 common/admin.py:15
 msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
 msgstr "Обновить список участников"
 
-#: bot.py:52 common/admin.py:18
+#: bot.py:49 common/admin.py:18
 msgid "BUTTON_ADMIN_STOP_FETCHING"
 msgstr "Остановить рассылку"
 
-#: bot.py:55 common/admin.py:21
+#: bot.py:52 common/admin.py:21
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Запустить рассылку"
 
-#: bot.py:76
+#: bot.py:73
 msgid "MESSAGE_START"
 msgstr ""
 "Я сообщу, когда выбранные вами участники прибудут на КП.\n"
@@ -41,110 +41,110 @@ msgstr ""
 "/remove - убрать участника из списка\n"
 "/status - показать статус всех участников из вашего списка"
 
-#: bot.py:91
+#: bot.py:88
 msgid "MESSAGE_ADMIN_START"
 msgstr "Нажмите, чтобы обновить список участников"
 
-#: bot.py:112 common/admin.py:40
+#: bot.py:109 common/admin.py:40
 msgid "MESSAGE_ADMIN_RELOADING_CONFIGURATION"
 msgstr "Запрашиваю списки КП и участников"
 
-#: bot.py:116 common/admin.py:44
+#: bot.py:113 common/admin.py:44
 #, python-brace-format
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}"
 msgstr "Получены данные о {control_count} КП и {participant_count} участниках"
 
-#: bot.py:120 common/admin.py:48
+#: bot.py:117 common/admin.py:48
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"
 msgstr "Во время загрузки данных произошла ошибка. Больше информации вы найдёте в журналах."
 
-#: bot.py:124 common/admin.py:52
+#: bot.py:121 common/admin.py:52
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Рассылка остановлена"
 
-#: bot.py:128 common/admin.py:56
+#: bot.py:125 common/admin.py:56
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Рассылка запущена"
 
-#: bot.py:163
+#: bot.py:160
 msgid "MESSAGE_DM_INTERNAL_ERROR"
 msgstr "Возникла внутренняя ошибка. Я отправил администратору отчёт для диагностики."
 
-#: bot.py:191
+#: bot.py:188
 msgid "DNF"
 msgstr "сход"
 
-#: bot.py:201
+#: bot.py:198
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "№{frame_plate_number} ({full_name}): {control_name} ({distance} км), {time}"
 
-#: bot.py:207
+#: bot.py:204
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "Новости об участниках из вашего списка:\n"
 "{entries}"
 
-#: bot.py:272
+#: bot.py:269
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: bot.py:281
+#: bot.py:278
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: bot.py:295
+#: bot.py:292
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "Участник с таким номером не зарегистрирован."
 
-#: bot.py:299
+#: bot.py:296
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "Участник с таким номером уже есть в вашем списке."
 
-#: bot.py:304
+#: bot.py:301
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) добавлен в ваш список."
 
-#: bot.py:309
+#: bot.py:306
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "Участника с таким номером нет в вашем списке."
 
-#: bot.py:314
+#: bot.py:311
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) удалён из вашего списка."
 
-#: bot.py:330
+#: bot.py:327
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Ваш список участников пуст."
 
-#: bot.py:333
+#: bot.py:330
 #, python-brace-format
 msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
 msgstr "<strong>№{frame_plate_number}</strong> {full_name}"
 
-#: bot.py:338
+#: bot.py:335
 #, python-brace-format
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
 msgstr ""
 "В вашем списке сейчас следующие участники:\n"
 "{items}"
 
-#: bot.py:345
+#: bot.py:342
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: bot.py:354
+#: bot.py:351
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: bot.py:355
+#: bot.py:352
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: bot.py:356
+#: bot.py:353
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 

@@ -1,5 +1,3 @@
-#!./venv/bin/python
-
 import subprocess
 
 # Should a new translation language be added, register it using the following command:

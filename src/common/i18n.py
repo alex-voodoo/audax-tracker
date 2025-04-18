@@ -6,7 +6,7 @@ import gettext
 
 from telegram import User
 
-import settings
+from . import settings
 
 _last_used_lang = None
 _last_used_trans = None
