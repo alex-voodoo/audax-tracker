@@ -93,6 +93,10 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
         state.set_last_successful_fetch(response["next_since"])
 
     except Exception:
+        await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID,
+                                       text=i18n.default().gettext("MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"),
+                                       parse_mode=ParseMode.HTML)
+
         stop_fetching()
         raise
 

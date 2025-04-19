@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-19 17:50+0200\n"
+"POT-Creation-Date: 2025-04-19 18:21+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: bot.py:55
+#: bot.py:51
 msgid "MESSAGE_START"
 msgstr ""
 "I can notify you when participants of your choice arrive at controls.\n"
@@ -29,7 +29,31 @@ msgstr ""
 "/remove - stop tracking a participant\n"
 "/status - show status of all participants in your list"
 
-#: bot.py:78
+#: bot.py:58
+msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
+msgstr "Please enter frame plate number of a participant."
+
+#: bot.py:69
+msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
+msgstr "Please enter frame plate number of a participant."
+
+#: bot.py:84
+msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
+msgstr "Your list of participants is empty."
+
+#: bot.py:87
+#, python-brace-format
+msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
+msgstr "<strong>#{frame_plate_number}</strong> {full_name}"
+
+#: bot.py:92
+#, python-brace-format
+msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
+msgstr ""
+"Here is your list of participants:\n"
+"{items}"
+
+#: bot.py:116
 #, python-brace-format
 msgid "ERROR_REPORT_BODY {error_uuid} {traceback} {update} {chat_data} {user_data}"
 msgstr ""
@@ -49,75 +73,51 @@ msgstr ""
 "\n"
 "context.user_data = {user_data}"
 
-#: bot.py:85
+#: bot.py:123
 #, python-brace-format
 msgid "ERROR_REPORT_CAPTION {error_uuid}"
 msgstr "Report for error <code>{error_uuid}</code>"
 
-#: bot.py:91
+#: bot.py:129
 #, python-brace-format
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "An internal error <code>{error_uuid}</code> occurred.  The administrator is notified about this problem."
 
-#: bot.py:97
-msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
-msgstr "Please enter frame plate number of a participant."
-
-#: bot.py:106
-msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
-msgstr "Please enter frame plate number of a participant."
-
-#: bot.py:120
+#: bot.py:140
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: bot.py:124
+#: bot.py:144
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:129
+#: bot.py:149
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: bot.py:134
+#: bot.py:154
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:139
+#: bot.py:159
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: bot.py:155
-msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
-msgstr "Your list of participants is empty."
-
-#: bot.py:158
-#, python-brace-format
-msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
-msgstr "<strong>#{frame_plate_number}</strong> {full_name}"
-
-#: bot.py:163
-#, python-brace-format
-msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
-msgstr ""
-"Here is your list of participants:\n"
-"{items}"
-
-#: bot.py:170
+#: bot.py:174
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:179
+#: bot.py:183
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:180
+#: bot.py:184
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:181
+#: bot.py:185
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
@@ -173,4 +173,8 @@ msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
+
+#: common/remote.py:97
+msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
+msgstr "An error occurred when fetching updates.  Stopped sending notifications."
 
