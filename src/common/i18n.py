@@ -1,27 +1,36 @@
 """
-Internationalisation utilities
+Internationalisation
 """
 
 import gettext
+import pathlib
 
 from telegram import User
 
 from . import settings
 
+_DOMAIN = "bot"
+
 _last_used_lang = None
 _last_used_trans = None
+
+
+def _get_locale_directory():
+    """Get absolute path to the locale directory"""
+
+    return pathlib.Path(__file__).parent.parent / "locales"
 
 
 def default():
     """Get the default translator"""
 
-    return gettext.translation("bot", localedir="locales", languages=[settings.DEFAULT_LANGUAGE])
+    return gettext.translation(domain=_DOMAIN, localedir=_get_locale_directory(), languages=[settings.DEFAULT_LANGUAGE])
 
 
 def for_lang(language_code: str):
-    """Get the translator for `language_code` if it exists"""
+    """Get the translator for `language_code` if it exists, otherwise the default one"""
 
-    return gettext.translation("bot", localedir="locales", languages=[
+    return gettext.translation(domain=_DOMAIN, localedir=_get_locale_directory(), languages=[
         language_code if language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE])
 
 
@@ -39,6 +48,6 @@ def trans(user: User):
     global _last_used_lang, _last_used_trans
     if _last_used_lang != user_lang:
         _last_used_lang = user_lang
-        _last_used_trans = gettext.translation("bot", localedir="locales", languages=[user_lang])
+        _last_used_trans = gettext.translation(domain=_DOMAIN, localedir=_get_locale_directory(), languages=[user_lang])
 
     return _last_used_trans

@@ -7,7 +7,6 @@ import datetime
 import html
 import json
 import logging
-import os
 import traceback
 from zoneinfo import ZoneInfo
 

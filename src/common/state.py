@@ -1,6 +1,7 @@
 """
-Database stuff
+Persistent state
 """
+
 import json
 import pathlib
 
