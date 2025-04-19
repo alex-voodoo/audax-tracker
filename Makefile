@@ -29,9 +29,10 @@ install: $(service_dir) audax-tracker.service
 	cp src/bot.py $(lib_dir)/bot.py
 	mkdir -p $(lib_dir)/common
 	cp src/common/__init__.py $(lib_dir)/common/__init__.py
+	cp src/common/admin.py $(lib_dir)/common/admin.py
 	cp src/common/defaults.py $(lib_dir)/common/defaults.py
 	cp src/common/i18n.py $(lib_dir)/common/i18n.py
-	cp src/common/log.py $(lib_dir)/common/log.py
+	cp src/common/remote.py $(lib_dir)/common/remote.py
 	cp src/common/settings.py $(lib_dir)/common/settings.py
 	cp src/common/state.py $(lib_dir)/common/state.py
 	mkdir -p $(lib_dir)/locales/en/LC_MESSAGES

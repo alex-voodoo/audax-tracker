@@ -9,7 +9,6 @@ import json
 import logging
 import traceback
 import uuid
-from zoneinfo import ZoneInfo
 
 import httpx
 import requests
@@ -18,7 +17,7 @@ from telegram.constants import ParseMode
 from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler, filters,
                           MessageHandler)
 
-from common import i18n, settings, state
+from common import admin, i18n, remote, settings, state
 
 # Commands, sequences, and responses
 COMMAND_START, COMMAND_HELP, COMMAND_ADD, COMMAND_REMOVE, COMMAND_STATUS, COMMAND_ADMIN = (
@@ -35,24 +34,7 @@ logging.basicConfig(format="[%(asctime)s %(levelname)s %(name)s %(filename)s:%(l
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-periodic_fetching_job = None
-
-
-def get_admin_keyboard() -> InlineKeyboardMarkup:
-    global periodic_fetching_job
-
-    trans = i18n.default()
-
-    button_reload_participants = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
-                                                      callback_data=ADMIN_RELOAD_CONFIGURATION)
-    if periodic_fetching_job:
-        button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_STOP_FETCHING"),
-                                                      callback_data=ADMIN_STOP_FETCHING)
-    else:
-        button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_START_FETCHING"),
-                                                      callback_data=ADMIN_START_FETCHING)
-
-    return InlineKeyboardMarkup(((button_reload_participants,), (button_toggle_fetching,)), )
+_periodic_fetching_job = None
 
 
 async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -71,59 +53,6 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
         logger.info("Welcoming user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
 
     await message.reply_text(i18n.trans(user).gettext("MESSAGE_START"))
-
-
-async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Show the admin menu"""
-
-    message = update.effective_message
-    user = message.from_user
-
-    if user.id != settings.DEVELOPER_CHAT_ID:
-        logging.info("User {username} tried to invoke the admin UI".format(username=user.username))
-        return
-
-    trans = i18n.default()
-
-    await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_ADMIN_START"),
-                                   reply_markup=get_admin_keyboard())
-
-
-def is_admin_query(data) -> bool:
-    return data in (ADMIN_RELOAD_CONFIGURATION, ADMIN_START_FETCHING, ADMIN_STOP_FETCHING)
-
-
-async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = update.callback_query
-    user = query.from_user
-
-    if user.id != settings.DEVELOPER_CHAT_ID:
-        logging.error("User {username} is not listed as administrator!".format(username=user.username))
-        return
-
-    await query.answer()
-
-    trans = i18n.default()
-
-    if query.data == ADMIN_RELOAD_CONFIGURATION:
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_CONFIGURATION"),
-                                      reply_markup=get_admin_keyboard())
-        if await reload_configuration():
-            await query.edit_message_text(
-                trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}").format(
-                    control_count=len(state.controls()), participant_count=len(state.participants())),
-                reply_markup=get_admin_keyboard())
-        else:
-            await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"),
-                                          reply_markup=get_admin_keyboard())
-    elif query.data == ADMIN_STOP_FETCHING:
-        stop_fetching()
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED"),
-                                      reply_markup=get_admin_keyboard())
-    elif query.data == ADMIN_START_FETCHING:
-        start_fetching(context.application)
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STARTED"),
-                                      reply_markup=get_admin_keyboard())
 
 
 async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -161,110 +90,6 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.effective_message.reply_text(
             i18n.trans(update.effective_message.from_user).gettext("MESSAGE_DM_INTERNAL_ERROR {error_uuid}").format(
                 error_uuid=error_uuid), parse_mode=ParseMode.HTML)
-
-
-async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:
-    try:
-        request = {"token": settings.REMOTE_ENDPOINT_AUTH_TOKEN, "method": "get-tracking-updates",
-                   "since": state.last_successful_fetch()}
-        response_raw = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
-        if response_raw.status_code != 200:
-            logger.info("Got HTTP error response: {c} {r}".format(c=response_raw.status_code, r=response_raw.reason))
-            return
-
-        response = response_raw.json()
-        if not response["success"]:
-            logger.info("Got API error response: {}".format(response["error_message"]))
-            return
-
-        logger.info("Got data response from the remote endpoint, preparing updates for the subscribers.")
-        packages = {}
-        for update in response["updates"]:
-            for tg_id, subscription in state.subscriptions().items():
-                if update["frame_plate_number"] in subscription["numbers"]:
-                    if tg_id not in packages:
-                        packages[tg_id] = []
-                    packages[tg_id].append(update)
-
-        def convert(tr, t) -> str:
-            if not t:
-                return tr.gettext("DNF")
-            return datetime.datetime.fromisoformat(t).astimezone(ZoneInfo(settings.TIME_ZONE)).strftime("%d %B %H:%M")
-
-        for tg_id, updates in packages.items():
-            checkins = []
-            lang = state.subscriptions()[tg_id]["lang"]
-            trans = i18n.for_lang(lang)
-            for update in sorted(updates, key=lambda u: int(u["frame_plate_number"])):
-                control = state.controls()[str(update["control"])]
-                checkins.append(trans.gettext(
-                    "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}").format(
-                    control_name=control["name"][lang], distance=control["distance"],
-                    frame_plate_number=update["frame_plate_number"],
-                    full_name=state.participants()[update["frame_plate_number"]],
-                    time=convert(trans, update["checkin_time"])))
-
-            await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
-                entries="\n".join(checkins)), parse_mode=ParseMode.HTML)
-
-        state.set_last_successful_fetch(response["next_since"])
-
-    except Exception as e:
-        stop_fetching()
-        raise
-
-
-def start_fetching(application: Application) -> None:
-    global periodic_fetching_job
-
-    if periodic_fetching_job:
-        logger.error("Called start_fetching() but already fetching!")
-        return
-
-    periodic_fetching_job = application.job_queue.run_repeating(periodic_fetch_data_and_notify_subscribers,
-                                                                interval=60 * settings.FETCHING_INTERVAL_MINUTES,
-                                                                first=10)
-
-    state.set_is_fetching(True)
-
-
-def stop_fetching() -> None:
-    global periodic_fetching_job
-
-    if not periodic_fetching_job:
-        logger.error("Called stop_fetching() but not fetching!")
-        return
-
-    periodic_fetching_job.schedule_removal()
-    periodic_fetching_job = None
-
-    state.set_is_fetching(False)
-
-
-async def reload_configuration() -> bool:
-    try:
-        request = {"token": settings.REMOTE_ENDPOINT_AUTH_TOKEN, "method": "get-configuration"}
-        logger.info("Sending request: {}".format(request))
-        response_raw = requests.post(settings.REMOTE_ENDPOINT_URL, json=request)
-        if response_raw.status_code != 200:
-            logger.info("Got HTTP error response: {c} {r}".format(c=response_raw.status_code, r=response_raw.reason))
-            return False
-
-        response = response_raw.json()
-        if not response["success"]:
-            logger.info("Got API error response: {}".format(response["error_message"]))
-            return False
-
-        logger.info(response)
-
-        state.set_controls(response["controls"])
-        state.set_participants(response["participants"])
-
-        return True
-
-    except Exception as e:
-        logger.error(e)
-        return False
 
 
 async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -376,14 +201,14 @@ def main() -> None:
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
     application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
 
-    application.add_handler(CommandHandler(COMMAND_ADMIN, handle_command_admin))
-    application.add_handler(CallbackQueryHandler(handle_query_admin, pattern=is_admin_query))
+    application.add_handler(CommandHandler(COMMAND_ADMIN, admin.handle_command_admin))
+    application.add_handler(CallbackQueryHandler(admin.handle_query_admin, pattern=admin.is_admin_query))
 
     application.add_error_handler(handle_error)
 
     if state.is_fetching():
         logger.info("Last state is: fetching, starting")
-        start_fetching(application)
+        remote.start_fetching(application)
     else:
         logger.info("Last state is: not fetching, staying idle")
 
