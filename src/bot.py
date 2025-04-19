@@ -4,18 +4,19 @@ This is the main script that contains the entry point of the bot.  Execute this 
 See README.md for details.
 """
 import datetime
-import html
+import io
 import json
 import logging
 import traceback
+import uuid
 from zoneinfo import ZoneInfo
 
 import httpx
 import requests
 from telegram import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
-from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler,
-                          filters, MessageHandler)
+from telegram.ext import (Application, CommandHandler, ContextTypes, CallbackQueryHandler, ConversationHandler, filters,
+                          MessageHandler)
 
 from common import i18n, settings, state
 
@@ -136,27 +137,30 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
         logger.error(exception)
         return
 
+    trans = i18n.default()
+
+    error_uuid = uuid.uuid4()
+
     # Log the error before we do anything else, so we can see it even if something breaks.
-    logger.error("Exception while handling an update:", exc_info=exception)
+    logger.error(f"Exception while handling an update (error UUID {error_uuid}):", exc_info=exception)
 
-    # traceback.format_exception returns the usual python message about an exception, but as a
-    # list of strings rather than a single string, so we have to join them together.
-    tb_string = "".join(traceback.format_exception(None, exception, exception.__traceback__))
-
-    # Build the message with some markup and additional information about what happened.
-    # TODO: add logic to deal with messages longer than 4096 characters (Telegram has that limit).
     update_str = update.to_dict() if isinstance(update, Update) else str(update)
-    error_message = (f"<pre>{html.escape(tb_string)}</pre>"
-                     f"<pre>update = {html.escape(json.dumps(update_str, indent=2, ensure_ascii=False))}</pre>\n\n"
-                     f"<pre>context.chat_data = {html.escape(str(context.chat_data))}</pre>\n\n"
-                     f"<pre>context.user_data = {html.escape(str(context.user_data))}</pre>\n\n")
+
+    error_message = trans.gettext("ERROR_REPORT_BODY {error_uuid} {traceback} {update} {chat_data} {user_data}").format(
+        chat_data=str(context.chat_data), error_uuid=error_uuid,
+        traceback="".join(traceback.format_exception(None, exception, exception.__traceback__)),
+        update=json.dumps(update_str, indent=2, ensure_ascii=False), user_data=str(context.user_data))
 
     # Finally, send the message
-    await context.bot.send_message(chat_id=settings.DEVELOPER_CHAT_ID, text=error_message, parse_mode=ParseMode.HTML)
+    await context.bot.send_document(chat_id=settings.DEVELOPER_CHAT_ID,
+                                    caption=trans.gettext("ERROR_REPORT_CAPTION {error_uuid}").format(
+                                        error_uuid=error_uuid), document=io.BytesIO(bytes(error_message, "utf-8")),
+                                    filename=f"audax-tracker-error-{error_uuid}.txt", parse_mode=ParseMode.HTML)
 
     if isinstance(update, Update) and update.effective_message:
         await update.effective_message.reply_text(
-            i18n.trans(update.effective_message.from_user).gettext("MESSAGE_DM_INTERNAL_ERROR"))
+            i18n.trans(update.effective_message.from_user).gettext("MESSAGE_DM_INTERNAL_ERROR {error_uuid}").format(
+                error_uuid=error_uuid), parse_mode=ParseMode.HTML)
 
 
 async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAULT_TYPE) -> None:

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-18 23:43+0200\n"
+"POT-Creation-Date: 2025-04-19 16:50+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -66,85 +66,111 @@ msgstr "Stopped sending notifications"
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Started sending notifications"
 
-#: bot.py:160
-msgid "MESSAGE_DM_INTERNAL_ERROR"
-msgstr "An internal error occurred.  I have notified my administrator about the error."
+#: bot.py:149
+#, python-brace-format
+msgid "ERROR_REPORT_BODY {error_uuid} {traceback} {update} {chat_data} {user_data}"
+msgstr ""
+"Error UUID {error_uuid}\n"
+"\n"
+"Exception traceback:\n"
+"--------------------\n"
+"\n"
+"{traceback}\n"
+"\n"
+"Other data:\n"
+"-----------\n"
+"\n"
+"update = {update}\n"
+"\n"
+"context.chat_data = {chat_data}\n"
+"\n"
+"context.user_data = {user_data}"
 
-#: bot.py:188
+#: bot.py:156
+#, python-brace-format
+msgid "ERROR_REPORT_CAPTION {error_uuid}"
+msgstr "Report for error <code>{error_uuid}</code>"
+
+#: bot.py:162
+#, python-brace-format
+msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
+msgstr "An internal error <code>{error_uuid}</code> occurred.  The administrator is notified about this problem."
+
+#: bot.py:191
 msgid "DNF"
 msgstr "DNF"
 
-#: bot.py:198
+#: bot.py:201
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "#{frame_plate_number} ({full_name}): {control_name} ({distance} km), {time}"
 
-#: bot.py:204
+#: bot.py:207
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
 
-#: bot.py:269
+#: bot.py:272
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: bot.py:278
+#: bot.py:281
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: bot.py:292
+#: bot.py:295
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: bot.py:296
+#: bot.py:299
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:301
+#: bot.py:304
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: bot.py:306
+#: bot.py:309
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:311
+#: bot.py:314
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: bot.py:327
+#: bot.py:330
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Your list of participants is empty."
 
-#: bot.py:330
+#: bot.py:333
 #, python-brace-format
 msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
 msgstr "<strong>#{frame_plate_number}</strong> {full_name}"
 
-#: bot.py:335
+#: bot.py:338
 #, python-brace-format
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
 msgstr ""
 "Here is your list of participants:\n"
 "{items}"
 
-#: bot.py:342
+#: bot.py:345
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:351
+#: bot.py:354
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:352
+#: bot.py:355
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:353
+#: bot.py:356
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
