@@ -47,3 +47,108 @@ Start the service by running `sudo sustemctl start audax-tracker`, stop it by ru
 The bot writes log messages to `stdout` and `stderr`.  In service mode these are redirected to `/var/log/audax-tracker.log`.
 
 Should any non-fatal errors occur in the bot, it will send error messages to its administrator user via private Telegram messages.
+
+## Remote endpoint protocol
+
+The bot requests data from a remote data source, which must be an HTTP server that handles POST requests from the bot at the single URL.
+
+### Request
+
+Each request is a dictionary that must have two mandatory fields:
+- `token` authenticates the bot at the server
+- `method` identifies the method to call
+
+Additional fields may be provided depending on the method.
+
+### Response
+
+The server responds with a JSON dictionary.  One field is mandatory, it is boolean `success` that indicates whether the request was handled with no errors, and the server was able to return the requested data.  If `success` is false, the response will contain error message in the `error_message` field.  Otherwise, it may have additional fields depending on the method.
+
+### Methods
+
+#### get-configuration
+
+Returns the current event configuration.
+
+The method has no parameters.
+
+Returned data:
+
+- `controls` is a dictionary where keys are control IDs and values are control descriptions.  Each control description is a dictionary that has the following fields:
+  - `distance` is the distance to the control from the start
+  - `finish` is a boolean that indicates whether this control is the finish one
+  - `name` is a dictionary where keys are language codes and values are names of the control in that language
+- `participants` is a dictionary where keys are frame plate numbers and values are full names of participants.
+
+Sample response:
+```
+{
+    'controls': {
+        '1': {
+            'distance': 0,
+            'name': {
+                'en': 'Novosibirsk',
+                'ru': 'Новосибирск'
+            },
+            'finish': False
+        },
+        '6': {
+            'distance': 100,
+            'name': {
+                'en': 'Toguchin',
+                'ru': 'Тогучин'
+            },
+            'finish': False
+        },
+        '7': {
+            'distance': 200,
+            'name': {
+                'en': 'Novosibirsk',
+                'ru': 'Новосибирск'
+            },
+            'finish': True
+        }
+    },
+    'participants: {
+        '42': 'Joe Blade',
+        '281': 'Nancy Smith',
+        '112': 'Иван Сидоров'
+    },
+    'success': True
+}
+```
+
+#### get-tracking-updates
+
+Returns a list of check-in events.
+
+Parameters:
+- `since` (optional) specifies the oldest timestamp for the events to return.  If it is not provided, the server will return all events since the start moment of the event.
+
+Returned data:
+- `next_since` is value that the client should supply next time as the `since` parameter.  The client should not parse or modify this value.
+- `updates` is a list of dictionaries where each dictionary describes the check-in event with the following fields:
+  - `frame_plate_number` identifies the participant
+  - `control` identifies the control
+  - `checkin_time` is ISO-formatted time when the participant checked in at the control, or None if they quit from the ride there (got DNF status).
+
+Sample response:
+
+```
+{
+    'next_since': '2025-04-19T19:22:00+00:00',
+    'success': True,
+    'updates': [
+        {
+            'frame_plate_number': '66',
+            'checkin_time': '2025-04-19T19:21:00Z',
+            'control': 22
+        },
+        {
+            'frame_plate_number': '34',
+            'checkin_time': None,
+            'control': 3
+        }
+    ]
+}
+```

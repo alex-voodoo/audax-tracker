@@ -60,6 +60,8 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
             logging.info("Got API error response: {}".format(response["error_message"]))
             return
 
+        logging.info(response)
+
         logging.info("Got data response from the remote endpoint, preparing updates for the subscribers.")
         packages = {}
         for update in response["updates"]:

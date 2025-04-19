@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-19 18:21+0200\n"
+"POT-Creation-Date: 2025-04-19 21:36+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -158,23 +158,23 @@ msgstr "Рассылка остановлена"
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Рассылка запущена"
 
-#: common/remote.py:74
+#: common/remote.py:76
 msgid "DNF"
 msgstr "сход"
 
-#: common/remote.py:84
+#: common/remote.py:86
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "№{frame_plate_number} ({full_name}): {control_name} ({distance} км), {time}"
 
-#: common/remote.py:90
+#: common/remote.py:92
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "Новости об участниках из вашего списка:\n"
 "{entries}"
 
-#: common/remote.py:97
+#: common/remote.py:99
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "При запросе данных возникла ошибка. Рассылка остановлена."
 
