@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-19 21:36+0200\n"
+"POT-Creation-Date: 2025-04-22 23:19+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -41,19 +41,19 @@ msgstr "Please enter frame plate number of a participant."
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Your list of participants is empty."
 
-#: bot.py:87
+#: bot.py:86
 #, python-brace-format
 msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
 msgstr "<strong>#{frame_plate_number}</strong> {full_name}"
 
-#: bot.py:92
+#: bot.py:91
 #, python-brace-format
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
 msgstr ""
 "Here is your list of participants:\n"
 "{items}"
 
-#: bot.py:116
+#: bot.py:115
 #, python-brace-format
 msgid "ERROR_REPORT_BODY {error_uuid} {traceback} {update} {chat_data} {user_data}"
 msgstr ""
@@ -73,108 +73,161 @@ msgstr ""
 "\n"
 "context.user_data = {user_data}"
 
-#: bot.py:123
+#: bot.py:122
 #, python-brace-format
 msgid "ERROR_REPORT_CAPTION {error_uuid}"
 msgstr "Report for error <code>{error_uuid}</code>"
 
-#: bot.py:129
+#: bot.py:128
 #, python-brace-format
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "An internal error <code>{error_uuid}</code> occurred.  The administrator is notified about this problem."
 
-#: bot.py:140
+#: bot.py:139
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: bot.py:144
+#: bot.py:142
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: bot.py:149
+#: bot.py:146
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: bot.py:154
+#: bot.py:150
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: bot.py:159
+#: bot.py:154
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: bot.py:174
+#: bot.py:168
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: bot.py:183
+#: bot.py:177
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: bot.py:184
+#: bot.py:178
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: bot.py:185
+#: bot.py:179
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
-#: common/admin.py:20
-msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
-msgstr "Reload participants"
-
 #: common/admin.py:23
+msgid "BUTTON_ADMIN_RELOAD_CONFIGURATION"
+msgstr "Update event information"
+
+#: common/admin.py:26
 msgid "BUTTON_ADMIN_STOP_FETCHING"
 msgstr "Stop sending notifications"
 
-#: common/admin.py:26
+#: common/admin.py:29
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Start sending notifications"
 
 #: common/admin.py:44
-msgid "MESSAGE_ADMIN_START"
-msgstr "Press to reload list of participants"
+#, python-brace-format
+msgid "PIECE_DAYS_S {days}"
+msgid_plural "PIECE_DAYS_P {days}"
+msgstr[0] "{days} day"
+msgstr[1] "{days} days"
+
+#: common/admin.py:45
+#, python-brace-format
+msgid "PIECE_HOURS_S {hours}"
+msgid_plural "PIECE_HOURS_P {hours}"
+msgstr[0] "{hours} hour"
+msgstr[1] "{hours} hours"
+
+#: common/admin.py:46
+#, python-brace-format
+msgid "PIECE_MINUTES_S {minutes}"
+msgid_plural "PIECE_MINUTES_P {minutes}"
+msgstr[0] "{minutes} minute"
+msgstr[1] "{minutes} minutes"
+
+#: common/admin.py:54
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
+msgstr "Will start in {remainder}."
+
+#: common/admin.py:57
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
+msgstr "In progress, will end in {remainder}."
+
+#: common/admin.py:60
+msgid "PIECE_ADMIN_START_STATUS_FINISHED"
+msgstr "The event is over."
+
+#: common/admin.py:63
+#, python-brace-format
+msgid "PIECE_CONTROLS_S {count}"
+msgid_plural "PIECE_CONTROLS_P {count}"
+msgstr[0] "{count} control"
+msgstr[1] "{count} controls"
 
 #: common/admin.py:65
+#, python-brace-format
+msgid "PIECE_PARTICIPANTS_S {count}"
+msgid_plural "PIECE_PARTICIPANTS_P {count}"
+msgstr[0] "{count} participant"
+msgstr[1] "{count} participants"
+
+#: common/admin.py:68
+#, python-brace-format
+msgid "PIECE_ADMIN_STATS {controls} {participants}"
+msgstr "{controls} and {participants} are registered in the system"
+
+#: common/admin.py:73
+msgid "MESSAGE_ADMIN_START_STATUS_UNKNOWN"
+msgstr "No event is configured at the moment."
+
+#: common/admin.py:115
 msgid "MESSAGE_ADMIN_RELOADING_CONFIGURATION"
 msgstr "Reloading controls and participants"
 
-#: common/admin.py:69
-#, python-brace-format
-msgid "MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}"
-msgstr "Loaded {control_count} controls and {participant_count} participants"
+#: common/admin.py:118
+msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_SUCCESS"
+msgstr "Event data is updated"
 
-#: common/admin.py:73
+#: common/admin.py:121
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"
 msgstr "An error occurred while loading data.  See logs for more details."
 
-#: common/admin.py:77
+#: common/admin.py:125
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Stopped sending notifications"
 
-#: common/admin.py:81
+#: common/admin.py:129
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Started sending notifications"
 
-#: common/remote.py:76
+#: common/remote.py:77
 msgid "DNF"
 msgstr "DNF"
 
-#: common/remote.py:86
+#: common/remote.py:87
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "#{frame_plate_number} ({full_name}): {control_name} ({distance} km), {time}"
 
-#: common/remote.py:92
+#: common/remote.py:93
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
 
-#: common/remote.py:99
+#: common/remote.py:100
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "An error occurred when fetching updates.  Stopped sending notifications."
 

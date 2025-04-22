@@ -13,8 +13,8 @@ import uuid
 import httpx
 from telegram import BotCommand, Update
 from telegram.constants import ParseMode
-from telegram.ext import (Application, CallbackQueryHandler, CommandHandler, ContextTypes, ConversationHandler, filters,
-                          MessageHandler)
+from telegram.ext import (Application, CallbackQueryHandler, CommandHandler, ContextTypes, ConversationHandler,
+                          Defaults, filters, MessageHandler)
 
 from common import admin, i18n, remote, settings, state
 
@@ -55,7 +55,7 @@ async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE)
     """Start the conversation to add a participant to the user's list"""
 
     await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
-        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"), parse_mode=ParseMode.HTML)
+        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"))
 
     context.user_data["action"] = COMMAND_ADD
 
@@ -66,7 +66,7 @@ async def handle_command_remove(update: Update, context: ContextTypes.DEFAULT_TY
     """Start the conversation to remove a participant from the user's list"""
 
     await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
-        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"), parse_mode=ParseMode.HTML)
+        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"))
 
     context.user_data["action"] = COMMAND_REMOVE
 
@@ -81,8 +81,7 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
     tg_id = str(user.id)
 
     if tg_id not in state.subscriptions():
-        await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"),
-                                       parse_mode=ParseMode.HTML)
+        await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"))
     else:
         items = [trans.gettext("MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}").format(frame_plate_number=p,
                                                                                               full_name=
@@ -90,7 +89,7 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
                  for p in state.subscriptions()[tg_id]["numbers"]]
         await context.bot.send_message(chat_id=user.id,
                                        text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST {items}").format(
-                                           items="\n".join(items)), parse_mode=ParseMode.HTML)
+                                           items="\n".join(items)))
 
 
 async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -122,12 +121,12 @@ async def handle_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> No
     await context.bot.send_document(chat_id=settings.DEVELOPER_CHAT_ID,
                                     caption=trans.gettext("ERROR_REPORT_CAPTION {error_uuid}").format(
                                         error_uuid=error_uuid), document=io.BytesIO(bytes(error_message, "utf-8")),
-                                    filename=f"audax-tracker-error-{error_uuid}.txt", parse_mode=ParseMode.HTML)
+                                    filename=f"audax-tracker-error-{error_uuid}.txt")
 
     if isinstance(update, Update) and update.effective_message:
         await update.effective_message.reply_text(
             i18n.trans(update.effective_message.from_user).gettext("MESSAGE_DM_INTERNAL_ERROR {error_uuid}").format(
-                error_uuid=error_uuid), parse_mode=ParseMode.HTML)
+                error_uuid=error_uuid))
 
 
 async def received_frame_plate_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -137,28 +136,23 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
     frame_plate_number = update.message.text
 
     if not state.has_participant(frame_plate_number):
-        await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NO_SUCH_PARTICIPANT"),
-                                       parse_mode=ParseMode.HTML)
+        await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NO_SUCH_PARTICIPANT"))
     elif context.user_data["action"] == COMMAND_ADD:
         if state.has_subscription(str(user.id), frame_plate_number):
-            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"),
-                                           parse_mode=ParseMode.HTML)
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_ALREADY_SUBSCRIBED"))
         else:
             state.add_subscription(user, update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]),
-                                           parse_mode=ParseMode.HTML)
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
-            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"),
-                                           parse_mode=ParseMode.HTML)
+            await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
         else:
             state.remove_subscription(str(user.id), update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]),
-                                           parse_mode=ParseMode.HTML)
+                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
     else:
         logging.error("Unknown action {}".format(context.user_data["action"]))
 
@@ -190,7 +184,11 @@ def main() -> None:
 
     logging.info("The bot starts in {} mode".format("service" if settings.SERVICE_MODE else "direct"))
 
-    application = Application.builder().token(settings.BOT_TOKEN).post_init(post_init).build()
+    application = (Application.builder()
+                   .token(settings.BOT_TOKEN)
+                   .defaults(Defaults(parse_mode=ParseMode.HTML))
+                   .post_init(post_init)
+                   .build())
 
     application.add_handler(CommandHandler(COMMAND_START, handle_command_start))
     application.add_handler(CommandHandler(COMMAND_HELP, handle_command_start))

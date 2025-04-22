@@ -74,38 +74,51 @@ The method has no parameters.
 
 Returned data:
 
+- `event` is a dictionary with the following fields:
+  - `name` is a dictionary where keys are language codes and values are names of the event in that language
+  - `start` is the date and time of the start (when the participants are allowed to the distance)
+  - `finish` is the date and time of the finish (when the finish control closes)
 - `controls` is a dictionary where keys are control IDs and values are control descriptions.  Each control description is a dictionary that has the following fields:
+  - `name` is a dictionary where keys are language codes and values are names of the control in that language
   - `distance` is the distance to the control from the start
   - `finish` is a boolean that indicates whether this control is the finish one
-  - `name` is a dictionary where keys are language codes and values are names of the control in that language
 - `participants` is a dictionary where keys are frame plate numbers and values are full names of participants.
 
 Sample response:
 ```
 {
+    'success': True,
+    'event': {
+        'name': {
+          'en': 'Chuysky Trakt 2025',
+          'ru': 'Чуйский Тракт 2025'
+        },
+        'start': '2025-07-04T02:00:00+00:00',
+        'finish': '2025-07-07T20:14:00+00:00'
+    },
     'controls': {
         '1': {
-            'distance': 0,
             'name': {
                 'en': 'Novosibirsk',
                 'ru': 'Новосибирск'
             },
+            'distance': 0,
             'finish': False
         },
         '6': {
-            'distance': 100,
             'name': {
                 'en': 'Toguchin',
                 'ru': 'Тогучин'
             },
+            'distance': 100,
             'finish': False
         },
         '7': {
-            'distance': 200,
             'name': {
                 'en': 'Novosibirsk',
                 'ru': 'Новосибирск'
             },
+            'distance': 200,
             'finish': True
         }
     },
@@ -113,8 +126,7 @@ Sample response:
         '42': 'Joe Blade',
         '281': 'Nancy Smith',
         '112': 'Иван Сидоров'
-    },
-    'success': True
+    }
 }
 ```
 
@@ -128,9 +140,9 @@ Parameters:
 Returned data:
 - `next_since` is value that the client should supply next time as the `since` parameter.  The client should not parse or modify this value.
 - `updates` is a list of dictionaries where each dictionary describes the check-in event with the following fields:
+  - `checkin_time` is ISO-formatted time when a participant checked in at a control, or None if they quit from the ride there (got DNF status).
   - `frame_plate_number` identifies the participant
   - `control` identifies the control
-  - `checkin_time` is ISO-formatted time when the participant checked in at the control, or None if they quit from the ride there (got DNF status).
 
 Sample response:
 
@@ -140,13 +152,13 @@ Sample response:
     'success': True,
     'updates': [
         {
-            'frame_plate_number': '66',
             'checkin_time': '2025-04-19T19:21:00Z',
+            'frame_plate_number': '66',
             'control': 22
         },
         {
-            'frame_plate_number': '34',
             'checkin_time': None,
+            'frame_plate_number': '34',
             'control': 3
         }
     ]

@@ -2,23 +2,26 @@
 Admin stuff
 """
 
+import datetime
 import logging
+from zoneinfo import ZoneInfo
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 from . import i18n, remote, settings, state
 
+ADMIN_RELOAD_CONFIGURATION, ADMIN_START_FETCHING, ADMIN_STOP_FETCHING = (
+    "admin-reload-configuration", "admin-start-fetching", "admin-stop-fetching")
 
-ADMIN_RELOAD_CONFIGURATION, ADMIN_STOP_FETCHING, ADMIN_START_FETCHING = (
-    "admin-reload-configuration", "admin-stop-fetching", "admin-start-fetching")
 
+def _keyboard() -> InlineKeyboardMarkup:
+    """Create the administrator's keyboard"""
 
-def get_admin_keyboard() -> InlineKeyboardMarkup:
     trans = i18n.default()
 
-    button_reload_participants = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_RELOAD_PARTICIPANTS"),
-                                                      callback_data=ADMIN_RELOAD_CONFIGURATION)
+    button_reload_configuration = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_RELOAD_CONFIGURATION"),
+                                                       callback_data=ADMIN_RELOAD_CONFIGURATION)
     if remote.is_fetching():
         button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_STOP_FETCHING"),
                                                       callback_data=ADMIN_STOP_FETCHING)
@@ -26,7 +29,57 @@ def get_admin_keyboard() -> InlineKeyboardMarkup:
         button_toggle_fetching = InlineKeyboardButton(trans.gettext("BUTTON_ADMIN_START_FETCHING"),
                                                       callback_data=ADMIN_START_FETCHING)
 
-    return InlineKeyboardMarkup(((button_reload_participants,), (button_toggle_fetching,)), )
+    return InlineKeyboardMarkup(((button_reload_configuration,), (button_toggle_fetching,)), )
+
+
+def _general_status(result_message: str = None) -> str:
+    """Format general status of the system"""
+
+    trans = i18n.default()
+    lang = trans.info()["language"]
+
+    def format_remainder(delta: datetime.timedelta) -> str:
+        hours = int(delta.seconds / 3600)
+        minutes = int(delta.seconds % 3600 / 60)
+        days_str = trans.ngettext("PIECE_DAYS_S {days}", "PIECE_DAYS_P {days}", delta.days).format(days=delta.days)
+        hours_str = trans.ngettext("PIECE_HOURS_S {hours}", "PIECE_HOURS_P {hours}", hours).format(hours=hours)
+        minutes_str = trans.ngettext("PIECE_MINUTES_S {minutes}", "PIECE_MINUTES_P {minutes}", minutes).format(
+            minutes=minutes)
+
+        return "{d}, {h}, {m}".format(d=days_str, h=hours_str, m=minutes_str)
+
+    def format_progress() -> str:
+        now = datetime.datetime.now().astimezone(ZoneInfo(settings.TIME_ZONE))
+        if now < state.event_start():
+            return trans.gettext("PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}").format(
+                remainder=format_remainder(state.event_start() - now))
+        elif now < state.event_finish():
+            return trans.gettext("PIECE_ADMIN_START_STATUS_IN_AIR {remainder}").format(
+                remainder=format_remainder(state.event_finish() - now))
+        else:
+            return trans.gettext("PIECE_ADMIN_START_STATUS_FINISHED")
+
+    def format_stats() -> str:
+        controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", len(state.controls())).format(
+            count=len(state.controls()))
+        participants = trans.ngettext("PIECE_PARTICIPANTS_S {count}", "PIECE_PARTICIPANTS_P {count}",
+                                      len(state.participants())).format(count=len(state.participants()))
+
+        return trans.gettext("PIECE_ADMIN_STATS {controls} {participants}").format(controls=controls,
+                                                                                   participants=participants)
+
+    message = []
+    if not state.event_name(lang) or not state.event_start() or not state.event_finish():
+        message.append(trans.gettext("MESSAGE_ADMIN_START_STATUS_UNKNOWN"))
+    else:
+        message.append("<strong>{event_name}</strong>".format(event_name=state.event_name(lang)))
+        message.append(format_stats())
+        message.append(format_progress())
+
+    if result_message:
+        message.append("<em>{message}</em>".format(message=result_message))
+
+    return "\n\n".join(message)
 
 
 async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -39,10 +92,7 @@ async def handle_command_admin(update: Update, context: ContextTypes.DEFAULT_TYP
         logging.info("User {username} tried to invoke the admin UI".format(username=user.username))
         return
 
-    trans = i18n.default()
-
-    await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_ADMIN_START"),
-                                   reply_markup=get_admin_keyboard())
+    await context.bot.send_message(chat_id=user.id, text=_general_status(), reply_markup=_keyboard())
 
 
 def is_admin_query(data) -> bool:
@@ -62,21 +112,19 @@ async def handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE)
     trans = i18n.default()
 
     if query.data == ADMIN_RELOAD_CONFIGURATION:
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_RELOADING_CONFIGURATION"),
-                                      reply_markup=get_admin_keyboard())
+        await query.edit_message_text(_general_status(trans.gettext("MESSAGE_ADMIN_RELOADING_CONFIGURATION")),
+                                      reply_markup=_keyboard())
         if await remote.reload_configuration():
-            await query.edit_message_text(
-                trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}").format(
-                    control_count=len(state.controls()), participant_count=len(state.participants())),
-                reply_markup=get_admin_keyboard())
+            await query.edit_message_text(_general_status(trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOAD_SUCCESS")),
+                                          reply_markup=_keyboard())
         else:
             await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"),
-                                          reply_markup=get_admin_keyboard())
+                                          reply_markup=_keyboard())
     elif query.data == ADMIN_STOP_FETCHING:
         remote.stop_fetching()
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED"),
-                                      reply_markup=get_admin_keyboard())
+        await query.edit_message_text(_general_status(trans.gettext("MESSAGE_ADMIN_FETCHING_STOPPED")),
+                                      reply_markup=_keyboard())
     elif query.data == ADMIN_START_FETCHING:
         remote.start_fetching(context.application)
-        await query.edit_message_text(trans.gettext("MESSAGE_ADMIN_FETCHING_STARTED"),
-                                      reply_markup=get_admin_keyboard())
+        await query.edit_message_text(_general_status(trans.gettext("MESSAGE_ADMIN_FETCHING_STARTED")),
+                                      reply_markup=_keyboard())

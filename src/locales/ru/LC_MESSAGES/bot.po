@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-19 21:36+0200\n"
+"POT-Creation-Date: 2025-04-22 23:19+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -41,19 +41,19 @@ msgstr "Введите нарамный номер участника:"
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Ваш список участников пуст."
 
-#: bot.py:87
+#: bot.py:86
 #, python-brace-format
 msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
 msgstr "<strong>№{frame_plate_number}</strong> {full_name}"
 
-#: bot.py:92
+#: bot.py:91
 #, python-brace-format
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
 msgstr ""
 "В вашем списке сейчас следующие участники:\n"
 "{items}"
 
-#: bot.py:116
+#: bot.py:115
 #, python-brace-format
 msgid "ERROR_REPORT_BODY {error_uuid} {traceback} {update} {chat_data} {user_data}"
 msgstr ""
@@ -73,108 +73,166 @@ msgstr ""
 "\n"
 "context.user_data = {user_data}"
 
-#: bot.py:123
+#: bot.py:122
 #, python-brace-format
 msgid "ERROR_REPORT_CAPTION {error_uuid}"
 msgstr "Отчёт об ошибке <code>{error_uuid}</code>"
 
-#: bot.py:129
+#: bot.py:128
 #, python-brace-format
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "Возникла внутренняя ошибка <code>{error_uuid}</code>. Администратор оповещён о проблеме."
 
-#: bot.py:140
+#: bot.py:139
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "Участник с таким номером не зарегистрирован."
 
-#: bot.py:144
+#: bot.py:142
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "Участник с таким номером уже есть в вашем списке."
 
-#: bot.py:149
+#: bot.py:146
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) добавлен в ваш список."
 
-#: bot.py:154
+#: bot.py:150
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "Участника с таким номером нет в вашем списке."
 
-#: bot.py:159
+#: bot.py:154
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) удалён из вашего списка."
 
-#: bot.py:174
+#: bot.py:168
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: bot.py:183
+#: bot.py:177
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: bot.py:184
+#: bot.py:178
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: bot.py:185
+#: bot.py:179
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 
-#: common/admin.py:20
-msgid "BUTTON_ADMIN_RELOAD_PARTICIPANTS"
-msgstr "Обновить список участников"
-
 #: common/admin.py:23
+msgid "BUTTON_ADMIN_RELOAD_CONFIGURATION"
+msgstr "Обновить информацию о мероприятии"
+
+#: common/admin.py:26
 msgid "BUTTON_ADMIN_STOP_FETCHING"
 msgstr "Остановить рассылку"
 
-#: common/admin.py:26
+#: common/admin.py:29
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Запустить рассылку"
 
 #: common/admin.py:44
-msgid "MESSAGE_ADMIN_START"
-msgstr "Нажмите, чтобы обновить список участников"
+#, python-brace-format
+msgid "PIECE_DAYS_S {days}"
+msgid_plural "PIECE_DAYS_P {days}"
+msgstr[0] "{days} день"
+msgstr[1] "{days} дня"
+msgstr[2] "{days} дней"
+
+#: common/admin.py:45
+#, python-brace-format
+msgid "PIECE_HOURS_S {hours}"
+msgid_plural "PIECE_HOURS_P {hours}"
+msgstr[0] "{hours} час"
+msgstr[1] "{hours} часа"
+msgstr[2] "{hours} часов"
+
+#: common/admin.py:46
+#, python-brace-format
+msgid "PIECE_MINUTES_S {minutes}"
+msgid_plural "PIECE_MINUTES_P {minutes}"
+msgstr[0] "{minutes} минута"
+msgstr[1] "{minutes} минуты"
+msgstr[2] "{minutes} минут"
+
+#: common/admin.py:54
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
+msgstr "До старта {remainder}"
+
+#: common/admin.py:57
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
+msgstr "Мероприятие идёт, до финиша {remainder}"
+
+#: common/admin.py:60
+msgid "PIECE_ADMIN_START_STATUS_FINISHED"
+msgstr "Мероприятие окончено."
+
+#: common/admin.py:63
+#, python-brace-format
+msgid "PIECE_CONTROLS_S {count}"
+msgid_plural "PIECE_CONTROLS_P {count}"
+msgstr[0] "{count} контрольный пункт"
+msgstr[1] "{count} контрольного пункта"
+msgstr[2] "{count} контрольных пунктов"
 
 #: common/admin.py:65
+#, python-brace-format
+msgid "PIECE_PARTICIPANTS_S {count}"
+msgid_plural "PIECE_PARTICIPANTS_P {count}"
+msgstr[0] "{count} участник"
+msgstr[1] "{count} участника"
+msgstr[2] "{count} участников"
+
+#: common/admin.py:68
+#, python-brace-format
+msgid "PIECE_ADMIN_STATS {controls} {participants}"
+msgstr "В системе зарегистрированы {controls} и {participants}"
+
+#: common/admin.py:73
+msgid "MESSAGE_ADMIN_START_STATUS_UNKNOWN"
+msgstr "Нет информации о мероприятии"
+
+#: common/admin.py:115
 msgid "MESSAGE_ADMIN_RELOADING_CONFIGURATION"
 msgstr "Запрашиваю списки КП и участников"
 
-#: common/admin.py:69
-#, python-brace-format
-msgid "MESSAGE_ADMIN_CONFIGURATION_RELOADED {control_count} {participant_count}"
-msgstr "Получены данные о {control_count} КП и {participant_count} участниках"
+#: common/admin.py:118
+msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_SUCCESS"
+msgstr "Данные о мероприятии обновлены"
 
-#: common/admin.py:73
+#: common/admin.py:121
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"
 msgstr "Во время загрузки данных произошла ошибка. Больше информации вы найдёте в журналах."
 
-#: common/admin.py:77
+#: common/admin.py:125
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Рассылка остановлена"
 
-#: common/admin.py:81
+#: common/admin.py:129
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Рассылка запущена"
 
-#: common/remote.py:76
+#: common/remote.py:77
 msgid "DNF"
 msgstr "сход"
 
-#: common/remote.py:86
+#: common/remote.py:87
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "№{frame_plate_number} ({full_name}): {control_name} ({distance} км), {time}"
 
-#: common/remote.py:92
+#: common/remote.py:93
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "Новости об участниках из вашего списка:\n"
 "{entries}"
 
-#: common/remote.py:99
+#: common/remote.py:100
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "При запросе данных возникла ошибка. Рассылка остановлена."
 

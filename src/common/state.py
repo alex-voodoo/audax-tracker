@@ -2,6 +2,7 @@
 Persistent state
 """
 
+import datetime
 import json
 import pathlib
 
@@ -16,9 +17,10 @@ _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE
 _state = {}
 
 # Keys used in the state object
-_PARTICIPANTS, _CONTROLS, _SUBSCRIPTIONS, _FEED_STATUS, _IS_FETCHING, _LAST_SUCCESSFUL_FETCH, _LANG, _NUMBERS = (
-    "participants", "controls", "subscriptions", "feed_status", "is_fetching", "last_successful_fetch", "lang",
-    "numbers")
+(_CONTROLS, _EVENT, _FEED_STATUS, _FINISH, _IS_FETCHING, _LANG, _LAST_SUCCESSFUL_FETCH, _NAME, _NUMBERS, _PARTICIPANTS,
+ _START, _SUBSCRIPTIONS) = (
+    "controls", "event", "feed_status", "finish", "is_fetching", "lang", "last_successful_fetch", "name", "numbers",
+    "participants", "start", "subscriptions")
 
 
 def _save() -> None:
@@ -50,7 +52,7 @@ def is_fetching() -> bool:
 
 
 def set_is_fetching(new_value: bool) -> None:
-    """Sets the fetching state"""
+    """Set the fetching state"""
 
     global _state
     _state[_FEED_STATUS][_IS_FETCHING] = new_value
@@ -65,11 +67,36 @@ def last_successful_fetch() -> str:
 
 
 def set_last_successful_fetch(new_value: str) -> None:
-    """Sets the last successful fetch"""
+    """Set the last successful fetch"""
 
     global _state
+
     _state[_FEED_STATUS][_LAST_SUCCESSFUL_FETCH] = new_value
     _save()
+
+
+def set_event(new_value: dict) -> None:
+    global _state
+
+    _state[_EVENT] = new_value
+    _save()
+
+
+def event_name(lang: str) -> str:
+    _maybe_load()
+    if _EVENT not in _state or lang not in _state[_EVENT][_NAME]:
+        return ""
+    return _state[_EVENT][_NAME][lang]
+
+
+def event_start() -> datetime.datetime:
+    _maybe_load()
+    return datetime.datetime.fromisoformat(_state[_EVENT][_START]) if _EVENT in _state else None
+
+
+def event_finish() -> datetime.datetime:
+    _maybe_load()
+    return datetime.datetime.fromisoformat(_state[_EVENT][_FINISH]) if _EVENT in _state else None
 
 
 def controls() -> dict:
@@ -79,6 +106,7 @@ def controls() -> dict:
 
 def set_controls(new_value: list) -> None:
     global _state
+
     _state[_CONTROLS] = new_value
     _save()
 
@@ -90,6 +118,7 @@ def participants() -> dict:
 
 def set_participants(new_value: list) -> None:
     global _state
+
     _state[_PARTICIPANTS] = new_value
     _save()
 
@@ -114,6 +143,7 @@ def add_subscription(user: User, frame_plate_number: str) -> None:
 
 def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     global _state
+
     if tg_id not in _state[_SUBSCRIPTIONS]:
         return
     if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
