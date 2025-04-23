@@ -29,7 +29,6 @@ install: $(service_dir) audax-tracker.service
 	cp src/bot.py $(lib_dir)/bot.py
 	mkdir -p $(lib_dir)/common
 	cp src/common/__init__.py $(lib_dir)/common/__init__.py
-	cp src/common/admin.py $(lib_dir)/common/admin.py
 	cp src/common/defaults.py $(lib_dir)/common/defaults.py
 	cp src/common/i18n.py $(lib_dir)/common/i18n.py
 	cp src/common/remote.py $(lib_dir)/common/remote.py
@@ -39,6 +38,9 @@ install: $(service_dir) audax-tracker.service
 	cp src/locales/en/LC_MESSAGES/bot.mo $(lib_dir)/locales/en/LC_MESSAGES/bot.mo
 	mkdir -p $(lib_dir)/locales/ru/LC_MESSAGES
 	cp src/locales/ru/LC_MESSAGES/bot.mo $(lib_dir)/locales/ru/LC_MESSAGES/bot.mo
+	mkdir -p $(lib_dir)/users
+	cp src/users/admin.py $(lib_dir)/users/admin.py
+	cp src/users/public.py $(lib_dir)/users/public.py
 
 	chown root:root $(lib_dir)/*
 	chmod 644 $(lib_dir)
