@@ -71,7 +71,10 @@ async def post_init(application: Application) -> None:
 def main() -> None:
     """Entry point"""
 
-    logging.info("The bot starts in {} mode".format("service" if settings.SERVICE_MODE else "direct"))
+    logging.info("The bot starts in {m} mode".format(m="service" if settings.SERVICE_MODE else "direct"))
+    logging.info(f"Settings are loaded from {settings.source_path()}")
+    logging.info(f"Remote endpoint URL: {settings.REMOTE_ENDPOINT_URL}, "
+                 f"data is queried every {settings.FETCHING_INTERVAL_MINUTES} minutes")
 
     application = (Application.builder()
                    .token(settings.BOT_TOKEN)
