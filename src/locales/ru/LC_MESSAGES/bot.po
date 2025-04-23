@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-23 18:28+0200\n"
+"POT-Creation-Date: 2025-04-23 20:39+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -48,6 +48,44 @@ msgstr "Отчёт об ошибке <code>{error_uuid}</code>"
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "Возникла внутренняя ошибка <code>{error_uuid}</code>. Администратор оповещён о проблеме."
 
+#: common/format.py:14
+#, python-brace-format
+msgid "PIECE_DAYS_S {days}"
+msgid_plural "PIECE_DAYS_P {days}"
+msgstr[0] "{days} день"
+msgstr[1] "{days} дня"
+msgstr[2] "{days} дней"
+
+#: common/format.py:15
+#, python-brace-format
+msgid "PIECE_HOURS_S {hours}"
+msgid_plural "PIECE_HOURS_P {hours}"
+msgstr[0] "{hours} час"
+msgstr[1] "{hours} часа"
+msgstr[2] "{hours} часов"
+
+#: common/format.py:16
+#, python-brace-format
+msgid "PIECE_MINUTES_S {minutes}"
+msgid_plural "PIECE_MINUTES_P {minutes}"
+msgstr[0] "{minutes} минута"
+msgstr[1] "{minutes} минуты"
+msgstr[2] "{minutes} минут"
+
+#: common/format.py:25
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
+msgstr "До старта {remainder}"
+
+#: common/format.py:28
+#, python-brace-format
+msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
+msgstr "Мероприятие идёт, до финиша {remainder}"
+
+#: common/format.py:31
+msgid "PIECE_ADMIN_START_STATUS_FINISHED"
+msgstr "Мероприятие окончено."
+
 #: common/remote.py:77
 msgid "DNF"
 msgstr "сход"
@@ -68,57 +106,19 @@ msgstr ""
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "При запросе данных возникла ошибка. Рассылка остановлена."
 
-#: users/admin.py:22
+#: users/admin.py:20
 msgid "BUTTON_ADMIN_RELOAD_CONFIGURATION"
 msgstr "Обновить информацию о мероприятии"
 
-#: users/admin.py:25
+#: users/admin.py:23
 msgid "BUTTON_ADMIN_STOP_FETCHING"
 msgstr "Остановить рассылку"
 
-#: users/admin.py:28
+#: users/admin.py:26
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Запустить рассылку"
 
-#: users/admin.py:43
-#, python-brace-format
-msgid "PIECE_DAYS_S {days}"
-msgid_plural "PIECE_DAYS_P {days}"
-msgstr[0] "{days} день"
-msgstr[1] "{days} дня"
-msgstr[2] "{days} дней"
-
-#: users/admin.py:44
-#, python-brace-format
-msgid "PIECE_HOURS_S {hours}"
-msgid_plural "PIECE_HOURS_P {hours}"
-msgstr[0] "{hours} час"
-msgstr[1] "{hours} часа"
-msgstr[2] "{hours} часов"
-
-#: users/admin.py:45
-#, python-brace-format
-msgid "PIECE_MINUTES_S {minutes}"
-msgid_plural "PIECE_MINUTES_P {minutes}"
-msgstr[0] "{minutes} минута"
-msgstr[1] "{minutes} минуты"
-msgstr[2] "{minutes} минут"
-
-#: users/admin.py:53
-#, python-brace-format
-msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
-msgstr "До старта {remainder}"
-
-#: users/admin.py:56
-#, python-brace-format
-msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
-msgstr "Мероприятие идёт, до финиша {remainder}"
-
-#: users/admin.py:59
-msgid "PIECE_ADMIN_START_STATUS_FINISHED"
-msgstr "Мероприятие окончено."
-
-#: users/admin.py:62
+#: users/admin.py:39
 #, python-brace-format
 msgid "PIECE_CONTROLS_S {count}"
 msgid_plural "PIECE_CONTROLS_P {count}"
@@ -126,7 +126,7 @@ msgstr[0] "{count} контрольный пункт"
 msgstr[1] "{count} контрольного пункта"
 msgstr[2] "{count} контрольных пунктов"
 
-#: users/admin.py:64
+#: users/admin.py:41
 #, python-brace-format
 msgid "PIECE_PARTICIPANTS_S {count}"
 msgid_plural "PIECE_PARTICIPANTS_P {count}"
@@ -134,32 +134,32 @@ msgstr[0] "{count} участник"
 msgstr[1] "{count} участника"
 msgstr[2] "{count} участников"
 
-#: users/admin.py:67
+#: users/admin.py:44
 #, python-brace-format
 msgid "PIECE_ADMIN_STATS {controls} {participants}"
 msgstr "В системе зарегистрированы {controls} и {participants}"
 
-#: users/admin.py:72
+#: users/admin.py:49
 msgid "MESSAGE_ADMIN_START_STATUS_UNKNOWN"
 msgstr "Нет информации о мероприятии"
 
-#: users/admin.py:117
+#: users/admin.py:94
 msgid "MESSAGE_ADMIN_RELOADING_CONFIGURATION"
 msgstr "Запрашиваю списки КП и участников"
 
-#: users/admin.py:120
+#: users/admin.py:97
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_SUCCESS"
 msgstr "Данные о мероприятии обновлены"
 
-#: users/admin.py:123
+#: users/admin.py:100
 msgid "MESSAGE_ADMIN_CONFIGURATION_RELOAD_ERROR"
 msgstr "Во время загрузки данных произошла ошибка. Больше информации вы найдёте в журналах."
 
-#: users/admin.py:127
+#: users/admin.py:104
 msgid "MESSAGE_ADMIN_FETCHING_STARTED"
 msgstr "Рассылка запущена"
 
-#: users/admin.py:131
+#: users/admin.py:108
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Рассылка остановлена"
 
@@ -182,57 +182,54 @@ msgstr "Введите нарамный номер участника:"
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: users/public.py:65
+#: users/public.py:72
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Ваш список участников пуст."
 
-#: users/public.py:67
+#: users/public.py:74
+msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"
+msgstr "В вашем списке сейчас следующие участники:"
+
+#: users/public.py:77
 #, python-brace-format
 msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
 msgstr "<strong>№{frame_plate_number}</strong> {full_name}"
 
-#: users/public.py:72
-#, python-brace-format
-msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST {items}"
-msgstr ""
-"В вашем списке сейчас следующие участники:\n"
-"{items}"
-
-#: users/public.py:83
+#: users/public.py:90
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "Участник с таким номером не зарегистрирован."
 
-#: users/public.py:86
+#: users/public.py:93
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "Участник с таким номером уже есть в вашем списке."
 
-#: users/public.py:90
+#: users/public.py:97
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) добавлен в ваш список."
 
-#: users/public.py:94
+#: users/public.py:101
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "Участника с таким номером нет в вашем списке."
 
-#: users/public.py:98
+#: users/public.py:105
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) удалён из вашего списка."
 
-#: users/public.py:112
+#: users/public.py:119
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: users/public.py:140
+#: users/public.py:147
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: users/public.py:141
+#: users/public.py:148
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: users/public.py:142
+#: users/public.py:149
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 

@@ -1,16 +1,16 @@
 """
-Public interface (shown to every user)
+Public interface (functions available to every user)
 """
 
 import logging
 
 from telegram import BotCommand, Update
-from telegram.ext import (Application, CommandHandler, ContextTypes, ConversationHandler, filters, MessageHandler)
+from telegram.ext import Application, CommandHandler, ContextTypes, ConversationHandler, filters, MessageHandler
 
-from common import i18n, settings, state
+from common import format, i18n, settings, state
 
 # Commands, sequences, and responses
-COMMAND_ADD, COMMAND_HELP, COMMAND_REMOVE, COMMAND_START, COMMAND_STATUS = ("add", "help", "remove", "start", "status")
+COMMAND_ADD, COMMAND_HELP, COMMAND_REMOVE, COMMAND_START, COMMAND_STATUS = "add", "help", "remove", "start", "status"
 TYPING_FRAME_PLATE_NUMBER = 1
 
 
@@ -59,18 +59,25 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
 
     user = update.effective_user
     trans = i18n.trans(user)
+    lang = trans.info()["language"]
     tg_id = str(user.id)
 
+    message = []
+    if state.event_name(lang) and state.event_start() and state.event_finish():
+        message.append("<strong>{event_name}</strong>".format(event_name=state.event_name(lang)))
+        message.append(format.event_status(trans))
+        message.append("")
+
     if tg_id not in state.subscriptions():
-        await context.bot.send_message(chat_id=user.id, text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"))
+        message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"))
     else:
-        items = [trans.gettext("MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}").format(frame_plate_number=p,
-                                                                                              full_name=
-                                                                                              state.participants()[p])
-                 for p in state.subscriptions()[tg_id]["numbers"]]
-        await context.bot.send_message(chat_id=user.id,
-                                       text=trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST {items}").format(
-                                           items="\n".join(items)))
+        message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"))
+        for p in state.subscriptions()[tg_id]["numbers"]:
+            message.append(
+                trans.gettext("MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}").format(frame_plate_number=p,
+                                                                                             full_name=
+                                                                                             state.participants()[p]))
+    await context.bot.send_message(chat_id=user.id, text="\n".join(message))
 
 
 async def received_frame_plate_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

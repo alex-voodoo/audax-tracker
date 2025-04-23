@@ -30,6 +30,7 @@ install: $(service_dir) audax-tracker.service
 	mkdir -p $(lib_dir)/common
 	cp src/common/__init__.py $(lib_dir)/common/__init__.py
 	cp src/common/defaults.py $(lib_dir)/common/defaults.py
+	cp src/common/format.py $(lib_dir)/common/format.py
 	cp src/common/i18n.py $(lib_dir)/common/i18n.py
 	cp src/common/remote.py $(lib_dir)/common/remote.py
 	cp src/common/settings.py $(lib_dir)/common/settings.py

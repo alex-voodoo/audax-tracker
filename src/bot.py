@@ -13,7 +13,7 @@ import uuid
 import httpx
 from telegram import Update
 from telegram.constants import ParseMode
-from telegram.ext import (Application, ContextTypes, Defaults)
+from telegram.ext import Application, ContextTypes, Defaults
 
 from common import i18n, remote, settings, state
 from users import admin, public

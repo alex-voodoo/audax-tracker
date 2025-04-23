@@ -2,11 +2,9 @@
 Administrator's interface
 """
 
-import datetime
 import logging
-from zoneinfo import ZoneInfo
 
-from common import i18n, remote, settings, state
+from common import format, i18n, remote, settings, state
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 
@@ -37,27 +35,6 @@ def _general_status(result_message: str = None) -> str:
     trans = i18n.default()
     lang = trans.info()["language"]
 
-    def format_remainder(delta: datetime.timedelta) -> str:
-        hours = int(delta.seconds / 3600)
-        minutes = int(delta.seconds % 3600 / 60)
-        days_str = trans.ngettext("PIECE_DAYS_S {days}", "PIECE_DAYS_P {days}", delta.days).format(days=delta.days)
-        hours_str = trans.ngettext("PIECE_HOURS_S {hours}", "PIECE_HOURS_P {hours}", hours).format(hours=hours)
-        minutes_str = trans.ngettext("PIECE_MINUTES_S {minutes}", "PIECE_MINUTES_P {minutes}", minutes).format(
-            minutes=minutes)
-
-        return "{d}, {h}, {m}".format(d=days_str, h=hours_str, m=minutes_str)
-
-    def format_progress() -> str:
-        now = datetime.datetime.now().astimezone(ZoneInfo(settings.TIME_ZONE))
-        if now < state.event_start():
-            return trans.gettext("PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}").format(
-                remainder=format_remainder(state.event_start() - now))
-        elif now < state.event_finish():
-            return trans.gettext("PIECE_ADMIN_START_STATUS_IN_AIR {remainder}").format(
-                remainder=format_remainder(state.event_finish() - now))
-        else:
-            return trans.gettext("PIECE_ADMIN_START_STATUS_FINISHED")
-
     def format_stats() -> str:
         controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", len(state.controls())).format(
             count=len(state.controls()))
@@ -73,7 +50,7 @@ def _general_status(result_message: str = None) -> str:
     else:
         message.append("<strong>{event_name}</strong>".format(event_name=state.event_name(lang)))
         message.append(format_stats())
-        message.append(format_progress())
+        message.append(format.event_status(trans))
 
     if result_message:
         message.append("<em>{message}</em>".format(message=result_message))
