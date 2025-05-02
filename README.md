@@ -34,7 +34,7 @@ Now the bot is ready to work.  It can be launched directly by running `python sr
 
 The bot runs in direct mode if the `AUDAX_TRACKER_SERVICE_MODE` environment variable is not set or not equal to "1".
 
-To launch the bot, activate the Python virtual environment and run `python bot.py` in a command terminal.  To stop it gracefully, press `Ctrl+C`.
+To launch the bot, activate the Python virtual environment and run `python src/bot.py` in a command terminal.  To stop it gracefully, press `Ctrl+C`.
 
 In direct mode, the bot assumes that its configuration file and persistent state file are located in the same directory where its entry point script is located, which is the `src` subdirectory of this repository.
 
