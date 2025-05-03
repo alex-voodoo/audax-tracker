@@ -7,7 +7,6 @@ import logging
 from zoneinfo import ZoneInfo
 
 import requests
-from telegram.constants import ParseMode
 from telegram.ext import ContextTypes, Application
 
 from . import i18n, settings, state
@@ -72,7 +71,7 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
                         packages[tg_id] = []
                     packages[tg_id].append(update)
 
-        def convert(tr, t) -> str:
+        def convert(tr, t: str) -> str:
             if not t:
                 return tr.gettext("DNF")
             return datetime.datetime.fromisoformat(t).astimezone(ZoneInfo(settings.TIME_ZONE)).strftime("%d %B %H:%M")
@@ -81,14 +80,18 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
             checkins = []
             lang = state.subscriptions()[tg_id]["lang"]
             trans = i18n.for_lang(lang)
-            for update in sorted(updates, key=lambda u: int(u["frame_plate_number"])):
-                control = state.controls()[str(update["control"])]
+            for update in sorted(updates, key=lambda u: f"{u['frame_plate_number']}-{u['checkin_time']}"):
+                frame_plate_number = update["frame_plate_number"]
+                control_id = str(update["control"])
+                checkin_time = update["checkin_time"]
+                control = state.controls()[control_id]
                 checkins.append(trans.gettext(
                     "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}").format(
                     control_name=control["name"][lang], distance=control["distance"],
-                    frame_plate_number=update["frame_plate_number"],
-                    full_name=state.participants()[update["frame_plate_number"]],
-                    time=convert(trans, update["checkin_time"])))
+                    frame_plate_number=frame_plate_number,
+                    full_name=state.participant(update["frame_plate_number"]).name,
+                    time=convert(trans, checkin_time)))
+                state.maybe_set_participant_last_known_status(frame_plate_number, control_id, checkin_time)
 
             await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
                 entries="\n".join(checkins)))

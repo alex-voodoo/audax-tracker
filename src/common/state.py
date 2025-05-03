@@ -4,6 +4,7 @@ Persistent state
 
 import datetime
 import json
+import logging
 import pathlib
 
 from telegram import User
@@ -13,14 +14,30 @@ from . import settings
 _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE else pathlib.Path(
     __file__).parent.parent / "state.json"
 
+# Keys used in the state object
+(_CHECKIN_TIME, _CONTROL, _CONTROLS, _EVENT, _FEED_STATUS, _FINISH, _IS_FETCHING, _LANG, _LAST_KNOWN_STATUS,
+ _LAST_SUCCESSFUL_FETCH, _NAME, _NUMBERS, _PARTICIPANTS, _START, _SUBSCRIPTIONS) = (
+    "checkin_time", "control", "controls", "event", "feed_status", "finish", "is_fetching", "lang", "last_known_status",
+    "last_successful_fetch", "name", "numbers", "participants", "start", "subscriptions")
+
+
+class Participant:
+    """Read-only convenience wrapper that describes a participant"""
+
+    def __init__(self, frame_plate_number: str):
+        data = _state[_PARTICIPANTS][frame_plate_number]
+
+        self.frame_plate_number = frame_plate_number
+        self.name = data[_NAME]
+
+        last_known_status = data[_LAST_KNOWN_STATUS] if _LAST_KNOWN_STATUS in data else {}
+
+        self.last_known_control_id = last_known_status[_CONTROL] if _CONTROL in last_known_status else None
+        self.last_known_checkin_time = last_known_status[_CHECKIN_TIME] if _CHECKIN_TIME in last_known_status else None
+
+
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
 _state = {}
-
-# Keys used in the state object
-(_CONTROLS, _EVENT, _FEED_STATUS, _FINISH, _IS_FETCHING, _LANG, _LAST_SUCCESSFUL_FETCH, _NAME, _NUMBERS, _PARTICIPANTS,
- _START, _SUBSCRIPTIONS) = (
-    "controls", "event", "feed_status", "finish", "is_fetching", "lang", "last_successful_fetch", "name", "numbers",
-    "participants", "start", "subscriptions")
 
 
 def _save() -> None:
@@ -111,16 +128,38 @@ def set_controls(new_value: list) -> None:
     _save()
 
 
-def participants() -> dict:
+def participant_count() -> int:
     _maybe_load()
-    return _state[_PARTICIPANTS]
+    return len(_state[_PARTICIPANTS])
 
 
-def set_participants(new_value: list) -> None:
+def set_participants(new_value: dict) -> None:
     global _state
 
-    _state[_PARTICIPANTS] = new_value
+    old_participants = _state[_PARTICIPANTS] if _PARTICIPANTS in _state else {}
+
+    def get_last_known_status(n: str) -> dict:
+        if n not in old_participants or _LAST_KNOWN_STATUS not in old_participants[n]:
+            return {}
+        return old_participants[n][_LAST_KNOWN_STATUS]
+
+    _state[_PARTICIPANTS] = {}
+    for frame_plate_number, name in new_value.items():
+        _state[_PARTICIPANTS][frame_plate_number] = {
+            _NAME: name,
+            _LAST_KNOWN_STATUS: get_last_known_status(frame_plate_number)
+        }
+
+    # TODO: Handle removing participants that had subscribers.  Probably the subscribers should be notified.
+
     _save()
+
+
+def participant(frame_plate_number: str) -> Participant:
+    if frame_plate_number not in _state[_PARTICIPANTS]:
+        return None
+
+    return Participant(frame_plate_number)
 
 
 def subscriptions() -> dict:
@@ -155,8 +194,30 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
 
 
 def has_subscription(tg_id: str, frame_plate_number: str) -> bool:
-    return tg_id in _state[_SUBSCRIPTIONS] and frame_plate_number in _state[_SUBSCRIPTIONS][tg_id]
+    return tg_id in _state[_SUBSCRIPTIONS] and frame_plate_number in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]
 
 
 def has_participant(frame_plate_number: str) -> bool:
     return frame_plate_number in _state[_PARTICIPANTS]
+
+
+def maybe_set_participant_last_known_status(frame_plate_number: str, control_id: str, checkin_time: str):
+    """Set last known status of the participant iff there is no newer status already"""
+
+    global _state
+
+    p = participant(frame_plate_number)
+    if (p.last_known_control_id and p.last_known_control_id != control_id and
+            p.last_known_checkin_time and checkin_time < p.last_known_checkin_time):
+        logging.info(f"Ignoring checkin of participant {frame_plate_number} at control {control_id} at {checkin_time} "
+                     f"because they have checked in at control {p.last_known_control_id} "
+                     f"at {p.last_known_checkin_time} (more recently)")
+        return
+
+    logging.info(f"New last known checkin time for participant {frame_plate_number} is {p.last_known_checkin_time}")
+
+    global _state
+    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CONTROL] = control_id
+    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CHECKIN_TIME] = checkin_time
+
+    _save()

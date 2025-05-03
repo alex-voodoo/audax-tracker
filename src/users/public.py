@@ -1,7 +1,7 @@
 """
 Public interface (functions available to every user)
 """
-
+import datetime
 import logging
 
 from telegram import BotCommand, Update
@@ -68,15 +68,53 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
         message.append(format.event_status(trans))
         message.append("")
 
+    def format_checkin_time(checkin_str: str):
+        checkin_time = datetime.datetime.fromisoformat(checkin_str)
+        return trans.gettext("CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}").format(day=checkin_time.day,
+                                                                                           hour=checkin_time.hour,
+                                                                                           minute=checkin_time.minute,
+                                                                                           month=format.datetime_month(
+                                                                                               trans,
+                                                                                               checkin_time.month))
+
+    def format_control_name(control_id):
+        return state.controls()[control_id]["name"][lang] if control_id else ""
+
+    def format_last_known_status(participant: state.Participant):
+        if not participant.last_known_control_id:
+            return trans.gettext("LAST_KNOWN_STATUS_UNKNOWN {participant_name} {frame_plate_number}").format(
+                participant_name=participant.name,
+                frame_plate_number=participant.frame_plate_number)
+
+        if state.controls()[participant.last_known_control_id]["finish"]:
+            return trans.gettext("LAST_KNOWN_STATUS_FINISH {participant_name} {frame_plate_number} "
+                                 "{result_time}").format(
+                participant_name=participant.name,
+                frame_plate_number=participant.frame_plate_number,
+                result_time=format.result_time(participant.last_known_checkin_time))
+
+        if participant.last_known_checkin_time:
+            return trans.gettext("LAST_KNOWN_STATUS_OK {participant_name} {frame_plate_number} {checkin_time} "
+                                 "{control_name} {distance}").format(
+                control_name=format_control_name(participant.last_known_control_id),
+                checkin_time=format_checkin_time(participant.last_known_checkin_time),
+                distance=state.controls()[participant.last_known_control_id]["distance"],
+                participant_name=participant.name,
+                frame_plate_number=participant.frame_plate_number)
+
+        return trans.gettext("LAST_KNOWN_STATUS_ABANDONED {participant_name} {frame_plate_number} "
+                             "{control_name} {distance}").format(
+            control_name=format_control_name(participant.last_known_control_id),
+            distance=state.controls()[participant.last_known_control_id]["distance"],
+            participant_name=participant.name,
+            frame_plate_number=participant.frame_plate_number)
+
     if tg_id not in state.subscriptions():
         message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"))
     else:
         message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"))
         for p in state.subscriptions()[tg_id]["numbers"]:
-            message.append(
-                trans.gettext("MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}").format(frame_plate_number=p,
-                                                                                             full_name=
-                                                                                             state.participants()[p]))
+            message.append(format_last_known_status(state.participant(p)))
     await context.bot.send_message(chat_id=user.id, text="\n".join(message))
 
 
@@ -95,7 +133,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
             state.add_subscription(user, update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
+                frame_plate_number=frame_plate_number, full_name=state.participant(frame_plate_number).name))
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
@@ -103,7 +141,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
             state.remove_subscription(str(user.id), update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participants()[frame_plate_number]))
+                frame_plate_number=frame_plate_number, full_name=state.participant(frame_plate_number).name))
     else:
         logging.error("Unknown action {}".format(context.user_data["action"]))
 

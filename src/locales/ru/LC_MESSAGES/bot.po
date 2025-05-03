@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-04-23 22:20+0200\n"
+"POT-Creation-Date: 2025-05-03 23:09+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -86,23 +86,71 @@ msgstr "Мероприятие идёт, до финиша {remainder}"
 msgid "PIECE_ADMIN_START_STATUS_FINISHED"
 msgstr "Мероприятие окончено."
 
-#: common/remote.py:77
+#: common/format.py:36
+msgid "PIECE_DATETIME_JAN"
+msgstr "января"
+
+#: common/format.py:38
+msgid "PIECE_DATETIME_FEB"
+msgstr "февраля"
+
+#: common/format.py:40
+msgid "PIECE_DATETIME_MAR"
+msgstr "марта"
+
+#: common/format.py:42
+msgid "PIECE_DATETIME_APR"
+msgstr "апреля"
+
+#: common/format.py:44
+msgid "PIECE_DATETIME_MAY"
+msgstr "мая"
+
+#: common/format.py:46
+msgid "PIECE_DATETIME_JUN"
+msgstr "июня"
+
+#: common/format.py:48
+msgid "PIECE_DATETIME_JUL"
+msgstr "июля"
+
+#: common/format.py:50
+msgid "PIECE_DATETIME_AUG"
+msgstr "августа"
+
+#: common/format.py:52
+msgid "PIECE_DATETIME_SEP"
+msgstr "сентября"
+
+#: common/format.py:54
+msgid "PIECE_DATETIME_OCT"
+msgstr "октября"
+
+#: common/format.py:56
+msgid "PIECE_DATETIME_NOV"
+msgstr "ноября"
+
+#: common/format.py:58
+msgid "PIECE_DATETIME_DEC"
+msgstr "декабря"
+
+#: common/remote.py:76
 msgid "DNF"
 msgstr "сход"
 
-#: common/remote.py:87
+#: common/remote.py:89
 #, python-brace-format
 msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
 msgstr "№{frame_plate_number} ({full_name}): {control_name} ({distance} км), {time}"
 
-#: common/remote.py:93
+#: common/remote.py:96
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "Новости об участниках из вашего списка:\n"
 "{entries}"
 
-#: common/remote.py:100
+#: common/remote.py:103
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "При запросе данных возникла ошибка. Рассылка остановлена."
 
@@ -182,54 +230,74 @@ msgstr "Введите нарамный номер участника:"
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: users/public.py:72
+#: users/public.py:73
+#, python-brace-format
+msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
+msgstr "{day} {month} {hour:02d}:{minute:02d}"
+
+#: users/public.py:85
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_name} {frame_plate_number}"
+msgstr "❔<strong>{frame_plate_number}</strong> {participant_name}: нет отметок"
+
+#: users/public.py:90
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_FINISH {participant_name} {frame_plate_number} {result_time}"
+msgstr "🏆<strong>{frame_plate_number}</strong> {participant_name}: финиш! Итоговое время: <strong>{result_time}</strong>"
+
+#: users/public.py:97
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_OK {participant_name} {frame_plate_number} {checkin_time} {control_name} {distance}"
+msgstr "✅<strong>{frame_plate_number}</strong> {participant_name}: КП {control_name} ({distance} км) {checkin_time}"
+
+#: users/public.py:105
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_ABANDONED {participant_name} {frame_plate_number} {control_name} {distance}"
+msgstr "❌<strong>{frame_plate_number}</strong> {participant_name}: сход на КП {control_name} ({distance} км)"
+
+#: users/public.py:113
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Ваш список участников пуст."
 
-#: users/public.py:74
+#: users/public.py:115
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"
 msgstr "В вашем списке сейчас следующие участники:"
 
-#: users/public.py:77
-#, python-brace-format
-msgid "MESSAGE_STATUS_ITEM {frame_plate_number} {full_name}"
-msgstr "<strong>№{frame_plate_number}</strong> {full_name}"
-
-#: users/public.py:90
+#: users/public.py:128
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "Участник с таким номером не зарегистрирован."
 
-#: users/public.py:93
+#: users/public.py:131
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "Участник с таким номером уже есть в вашем списке."
 
-#: users/public.py:97
+#: users/public.py:135
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) добавлен в ваш список."
 
-#: users/public.py:101
+#: users/public.py:139
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "Участника с таким номером нет в вашем списке."
 
-#: users/public.py:105
+#: users/public.py:143
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "Участник №{frame_plate_number} ({full_name}) удалён из вашего списка."
 
-#: users/public.py:119
+#: users/public.py:157
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: users/public.py:147
+#: users/public.py:185
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: users/public.py:148
+#: users/public.py:186
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: users/public.py:149
+#: users/public.py:187
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 

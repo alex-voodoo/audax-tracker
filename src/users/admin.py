@@ -39,7 +39,7 @@ def _general_status(result_message: str = None) -> str:
         controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", len(state.controls())).format(
             count=len(state.controls()))
         participants = trans.ngettext("PIECE_PARTICIPANTS_S {count}", "PIECE_PARTICIPANTS_P {count}",
-                                      len(state.participants())).format(count=len(state.participants()))
+                                      state.participant_count()).format(count=state.participant_count())
 
         return trans.gettext("PIECE_ADMIN_STATS {controls} {participants}").format(controls=controls,
                                                                                    participants=participants)

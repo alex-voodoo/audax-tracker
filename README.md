@@ -151,7 +151,7 @@ Parameters:
 - `since` (optional) specifies the oldest timestamp for the events to return.  If it is not provided, the server will return all events since the start moment of the event.
 
 Returned data:
-- `next_since` is value that the client SHOULD supply as the `since` parameter next time it calls this method.  The client SHOULD NOT parse or modify this value.
+- `next_since` is a value that the client SHOULD supply as the `since` parameter next time it calls this method.  The client SHOULD NOT parse or modify this value.  If the client complied with the above and provided exactly the same unmodified value at the next call to this method, the server MUST NOT repeat any tracking events returned earlier.
 - `updates` is a list of dictionaries where each dictionary describes the check-in event with the following fields:
   - `checkin_time` is date and time (in ISO format) when a participant checked in at a control, or None if they quit from the ride there (got DNF status).
   - `frame_plate_number` identifies the participant
