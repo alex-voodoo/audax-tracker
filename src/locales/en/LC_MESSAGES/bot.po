@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-03 23:09+0200\n"
+"POT-Creation-Date: 2025-05-04 00:14+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -233,22 +233,30 @@ msgstr "{month} {day} {hour:02d}:{minute:02d}"
 #: users/public.py:85
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_name} {frame_plate_number}"
-msgstr "❔<strong>{frame_plate_number}</strong> {participant_name}: no check-ins"
+msgstr ""
+"❔<strong>{frame_plate_number} {participant_name}</strong>\n"
+"        No check-ins"
 
 #: users/public.py:90
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_name} {frame_plate_number} {result_time}"
-msgstr "🏆<strong>{frame_plate_number}</strong> {participant_name}: finish! Result time: <strong>{result_time}</strong>"
+msgstr ""
+"🏆<strong>{frame_plate_number} {participant_name}</strong>\n"
+"        Finish!  Result time: <strong>{result_time}</strong>"
 
 #: users/public.py:97
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_OK {participant_name} {frame_plate_number} {checkin_time} {control_name} {distance}"
-msgstr "✅<strong>{frame_plate_number}</strong> {participant_name}: {control_name} ({distance} km) {checkin_time}"
+msgstr ""
+"✅<strong>{frame_plate_number} {participant_name}</strong>\n"
+"        {control_name} ({distance} km) {checkin_time}"
 
 #: users/public.py:105
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_ABANDONED {participant_name} {frame_plate_number} {control_name} {distance}"
-msgstr "❌<strong>{control_name}</strong> {participant_name}: abandoned at {control_name} ({distance} km)"
+msgstr ""
+"❌<strong>{control_name} {participant_name}</strong>\n"
+"        Abandoned at {control_name} ({distance} km)"
 
 #: users/public.py:113
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
