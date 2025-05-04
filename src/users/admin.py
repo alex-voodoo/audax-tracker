@@ -33,7 +33,6 @@ def _general_status(result_message: str = None) -> str:
     """Format general status of the system"""
 
     trans = i18n.default()
-    lang = trans.info()["language"]
 
     def format_stats() -> str:
         controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", state.control_count()).format(
@@ -45,10 +44,11 @@ def _general_status(result_message: str = None) -> str:
                                                                                    participants=participants)
 
     message = []
-    if not state.event_name(lang) or not state.event_start() or not state.event_finish():
+    event = state.Event()
+    if not event.valid:
         message.append(trans.gettext("MESSAGE_ADMIN_START_STATUS_UNKNOWN"))
     else:
-        message.append("<strong>{event_name}</strong>".format(event_name=state.event_name(lang)))
+        message.append("<strong>{event_name}</strong>".format(event_name=event.name(trans)))
         message.append(format_stats())
         message.append(format.event_status(trans))
 

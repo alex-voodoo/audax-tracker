@@ -15,26 +15,26 @@ _last_used_lang = None
 _last_used_trans = None
 
 
-def _get_locale_directory():
+def _get_locale_directory() -> pathlib.Path:
     """Get absolute path to the locale directory"""
 
     return pathlib.Path(__file__).parent.parent / "locales"
 
 
-def default():
+def default() -> gettext.GNUTranslations:
     """Get the default translator"""
 
     return gettext.translation(domain=_DOMAIN, localedir=_get_locale_directory(), languages=[settings.DEFAULT_LANGUAGE])
 
 
-def for_lang(language_code: str):
+def for_lang(language_code: str) -> gettext.GNUTranslations:
     """Get the translator for `language_code` if it exists, otherwise the default one"""
 
     return gettext.translation(domain=_DOMAIN, localedir=_get_locale_directory(), languages=[
         language_code if language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE])
 
 
-def trans(user: User):
+def trans(user: User) -> gettext.GNUTranslations:
     """Get a translator for the given user
 
     Respects the language-related settings.  Caches the translator and only loads another one if the language changes.

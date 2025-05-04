@@ -1,7 +1,7 @@
 """
 Public interface (functions available to every user)
 """
-import datetime
+
 import logging
 
 from telegram import BotCommand, Update
@@ -59,12 +59,12 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
 
     user = update.effective_user
     trans = i18n.trans(user)
-    lang = trans.info()["language"]
     tg_id = str(user.id)
 
     message = []
-    if state.event_name(lang) and state.event_start() and state.event_finish():
-        message.append("<strong>{event_name}</strong>".format(event_name=state.event_name(lang)))
+    event = state.Event()
+    if event.valid:
+        message.append("<strong>{event_name}</strong>".format(event_name=event.name(trans)))
         message.append(format.event_status(trans))
         message.append("")
 

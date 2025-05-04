@@ -24,13 +24,18 @@ def datetime_remainder(trans, delta: datetime.timedelta) -> str:
 def event_status(trans) -> str:
     """Format current status of the event"""
 
+    event = state.Event()
+
+    if not event.valid:
+        return ""
+
     now = datetime.datetime.now().astimezone(ZoneInfo(settings.TIME_ZONE))
-    if now < state.event_start():
+    if now < event.start:
         return trans.gettext("PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}").format(
-            remainder=datetime_remainder(trans, state.event_start() - now))
-    elif now < state.event_finish():
+            remainder=datetime_remainder(trans, event.start - now))
+    elif now < state.Event().finish:
         return trans.gettext("PIECE_ADMIN_START_STATUS_IN_AIR {remainder}").format(
-            remainder=datetime_remainder(trans, state.event_finish() - now))
+            remainder=datetime_remainder(trans, event.finish - now))
     else:
         return trans.gettext("PIECE_ADMIN_START_STATUS_FINISHED")
 
@@ -87,7 +92,7 @@ def checkin_day_and_time(trans, timestamp: str) -> str:
 def result_time(timestamp: str) -> str:
     """Calculate difference with event start and format result as hours and minutes"""
 
-    delta = datetime.datetime.fromisoformat(timestamp) - state.event_start()
+    delta = datetime.datetime.fromisoformat(timestamp) - state.Event().start
     hours = int(delta.seconds / 3600)
     minutes = int(delta.seconds % 3600 / 60)
     return f"{hours}:{minutes:02d}"

@@ -3,6 +3,7 @@ Persistent state
 """
 
 import datetime
+import gettext
 import json
 import logging
 import pathlib
@@ -36,8 +37,24 @@ class Control:
         self.distance = data[self._DISTANCE]
         self.finish = data[self._FINISH]
 
-    def name(self, trans):
+    def name(self, trans: gettext.GNUTranslations):
         return self._name[trans.info()["language"]]
+
+
+class Event:
+    """Read-only convenience wrapper that describes the event"""
+
+    def __init__(self):
+        data = _state[_EVENT]
+
+        self.start = datetime.datetime.fromisoformat(data[_START]) if _START in data else None
+        self.finish = datetime.datetime.fromisoformat(data[_FINISH]) if _FINISH in data else None
+        self._name = data[_NAME] if _NAME in data else None
+
+        self.valid = self.start is not None and self.finish is not None and self._name is not None
+
+    def name(self, trans: gettext.GNUTranslations):
+        return self._name[trans.info()["language"]] if self._name is not None else ""
 
 
 class Participant:
@@ -120,23 +137,6 @@ def set_event(new_value: dict) -> None:
 
     _state[_EVENT] = new_value
     _save()
-
-
-def event_name(lang: str) -> str:
-    _maybe_load()
-    if _EVENT not in _state or lang not in _state[_EVENT][_NAME]:
-        return ""
-    return _state[_EVENT][_NAME][lang]
-
-
-def event_start() -> datetime.datetime:
-    _maybe_load()
-    return datetime.datetime.fromisoformat(_state[_EVENT][_START]) if _EVENT in _state else None
-
-
-def event_finish() -> datetime.datetime:
-    _maybe_load()
-    return datetime.datetime.fromisoformat(_state[_EVENT][_FINISH]) if _EVENT in _state else None
 
 
 def control_count() -> int:

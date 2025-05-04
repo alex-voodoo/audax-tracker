@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-04 18:42+0200\n"
+"POT-Creation-Date: 2025-05-04 22:00+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -69,100 +69,100 @@ msgid_plural "PIECE_MINUTES_P {minutes}"
 msgstr[0] "{minutes} minute"
 msgstr[1] "{minutes} minutes"
 
-#: common/format.py:29
+#: common/format.py:34
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
 msgstr "Will start in {remainder}."
 
-#: common/format.py:32
+#: common/format.py:37
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
 msgstr "In progress, will end in {remainder}."
 
-#: common/format.py:35
+#: common/format.py:40
 msgid "PIECE_ADMIN_START_STATUS_FINISHED"
 msgstr "The event is over."
 
-#: common/format.py:42
+#: common/format.py:47
 msgid "PIECE_DATETIME_JAN"
 msgstr "January"
 
-#: common/format.py:44
+#: common/format.py:49
 msgid "PIECE_DATETIME_FEB"
 msgstr "February"
 
-#: common/format.py:46
+#: common/format.py:51
 msgid "PIECE_DATETIME_MAR"
 msgstr "March"
 
-#: common/format.py:48
+#: common/format.py:53
 msgid "PIECE_DATETIME_APR"
 msgstr "April"
 
-#: common/format.py:50
+#: common/format.py:55
 msgid "PIECE_DATETIME_MAY"
 msgstr "May"
 
-#: common/format.py:52
+#: common/format.py:57
 msgid "PIECE_DATETIME_JUN"
 msgstr "June"
 
-#: common/format.py:54
+#: common/format.py:59
 msgid "PIECE_DATETIME_JUL"
 msgstr "July"
 
-#: common/format.py:56
+#: common/format.py:61
 msgid "PIECE_DATETIME_AUG"
 msgstr "August"
 
-#: common/format.py:58
+#: common/format.py:63
 msgid "PIECE_DATETIME_SEP"
 msgstr "September"
 
-#: common/format.py:60
+#: common/format.py:65
 msgid "PIECE_DATETIME_OCT"
 msgstr "October"
 
-#: common/format.py:62
+#: common/format.py:67
 msgid "PIECE_DATETIME_NOV"
 msgstr "November"
 
-#: common/format.py:64
+#: common/format.py:69
 msgid "PIECE_DATETIME_DEC"
 msgstr "December"
 
-#: common/format.py:72
+#: common/format.py:77
 #, python-brace-format
 msgid "CONTROL_LABEL {name} {distance}"
 msgstr "{name} ({distance} km)"
 
-#: common/format.py:79
+#: common/format.py:84
 #, python-brace-format
 msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
 msgstr "{month} {day} {hour:02d}:{minute:02d}"
 
-#: common/format.py:100
+#: common/format.py:105
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
 msgstr ""
 "❔<strong>{participant_label}</strong>\n"
 "        No check-ins"
 
-#: common/format.py:106
+#: common/format.py:111
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
 msgstr ""
 "🏆<strong>{participant_label}</strong>\n"
 "        Finish!  Result time: <strong>{result_time}</strong>"
 
-#: common/format.py:112
+#: common/format.py:117
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅<strong>{participant_label}</strong>\n"
 "        {control_label} {checkin_time}"
 
-#: common/format.py:117
+#: common/format.py:122
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""
@@ -196,21 +196,21 @@ msgstr "Stop sending notifications"
 msgid "BUTTON_ADMIN_START_FETCHING"
 msgstr "Start sending notifications"
 
-#: users/admin.py:39
+#: users/admin.py:38
 #, python-brace-format
 msgid "PIECE_CONTROLS_S {count}"
 msgid_plural "PIECE_CONTROLS_P {count}"
 msgstr[0] "{count} control"
 msgstr[1] "{count} controls"
 
-#: users/admin.py:41
+#: users/admin.py:40
 #, python-brace-format
 msgid "PIECE_PARTICIPANTS_S {count}"
 msgid_plural "PIECE_PARTICIPANTS_P {count}"
 msgstr[0] "{count} participant"
 msgstr[1] "{count} participants"
 
-#: users/admin.py:44
+#: users/admin.py:43
 #, python-brace-format
 msgid "PIECE_ADMIN_STATS {controls} {participants}"
 msgstr "{controls} and {participants} are registered in the system"
@@ -303,3 +303,4 @@ msgstr "remove a participant from your list"
 #: users/public.py:146
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
+
