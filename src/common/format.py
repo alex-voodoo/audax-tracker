@@ -9,6 +9,8 @@ from common import settings, state
 
 
 def datetime_remainder(trans, delta: datetime.timedelta) -> str:
+    """Format time delta as days, hours and minutes"""
+
     hours = int(delta.seconds / 3600)
     minutes = int(delta.seconds % 3600 / 60)
     days_str = trans.ngettext("PIECE_DAYS_S {days}", "PIECE_DAYS_P {days}", delta.days).format(days=delta.days)
@@ -20,6 +22,8 @@ def datetime_remainder(trans, delta: datetime.timedelta) -> str:
 
 
 def event_status(trans) -> str:
+    """Format current status of the event"""
+
     now = datetime.datetime.now().astimezone(ZoneInfo(settings.TIME_ZONE))
     if now < state.event_start():
         return trans.gettext("PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}").format(
@@ -31,7 +35,9 @@ def event_status(trans) -> str:
         return trans.gettext("PIECE_ADMIN_START_STATUS_FINISHED")
 
 
-def datetime_month(trans, month_index: int) -> str:
+def month_name(trans, month_index: int) -> str:
+    """Return name of the month"""
+
     if month_index == 1:
         return trans.gettext("PIECE_DATETIME_JAN")
     elif month_index == 2:
@@ -60,8 +66,52 @@ def datetime_month(trans, month_index: int) -> str:
         raise RuntimeError("Wrong month number: ".format(month_index))
 
 
-def result_time(checkin_time: str) -> str:
-    delta = datetime.datetime.fromisoformat(checkin_time) - state.event_start()
+def control_name(trans, control_id: str):
+    return state.controls()[control_id]["name"][trans.info()["language"]] if control_id else ""
+
+
+def checkin_day_and_time(trans, timestamp: str) -> str:
+    """Format a datetime object in checkin format, which is month, day, hour and minute"""
+
+    checkin_time = datetime.datetime.fromisoformat(timestamp)
+    return trans.gettext("CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}").format(day=checkin_time.day,
+                                                                                       hour=checkin_time.hour,
+                                                                                       minute=checkin_time.minute,
+                                                                                       month=month_name(
+                                                                                           trans,
+                                                                                           checkin_time.month))
+
+
+def result_time(timestamp: str) -> str:
+    """Calculate difference with event start and format result as hours and minutes"""
+
+    delta = datetime.datetime.fromisoformat(timestamp) - state.event_start()
     hours = int(delta.seconds / 3600)
     minutes = int(delta.seconds % 3600 / 60)
     return f"{hours}:{minutes:02d}"
+
+
+def participant_status(trans, participant: state.Participant) -> str:
+    """Format current status of the participant"""
+
+    if not participant.last_known_control_id:
+        return trans.gettext("LAST_KNOWN_STATUS_UNKNOWN {participant_label}").format(
+            participant_label=participant.label)
+
+    if state.controls()[participant.last_known_control_id]["finish"]:
+        return trans.gettext("LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}").format(
+            participant_label=participant.label,
+            result_time=result_time(participant.last_known_checkin_time))
+
+    if participant.last_known_checkin_time:
+        return trans.gettext(
+            "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_name} {distance}").format(
+                control_name=control_name(trans, participant.last_known_control_id),
+                checkin_time=checkin_day_and_time(trans, participant.last_known_checkin_time),
+                distance=state.controls()[participant.last_known_control_id]["distance"],
+                participant_label=participant.label)
+
+    return trans.gettext("LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_name} {distance}").format(
+        control_name=control_name(trans, participant.last_known_control_id),
+        distance=state.controls()[participant.last_known_control_id]["distance"],
+        participant_label=participant.label)

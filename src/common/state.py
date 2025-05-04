@@ -35,6 +35,10 @@ class Participant:
         self.last_known_control_id = last_known_status[_CONTROL] if _CONTROL in last_known_status else None
         self.last_known_checkin_time = last_known_status[_CHECKIN_TIME] if _CHECKIN_TIME in last_known_status else None
 
+    @property
+    def label(self) -> str:
+        return f"{self.frame_plate_number} {self.name}"
+
 
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
 _state = {}

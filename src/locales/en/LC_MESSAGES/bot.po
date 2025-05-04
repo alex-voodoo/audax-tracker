@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-04 00:14+0200\n"
+"POT-Creation-Date: 2025-05-04 16:58+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -48,88 +48,121 @@ msgstr "Report for error <code>{error_uuid}</code>"
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "An internal error <code>{error_uuid}</code> occurred.  The administrator is notified about this problem."
 
-#: common/format.py:14
+#: common/format.py:16
 #, python-brace-format
 msgid "PIECE_DAYS_S {days}"
 msgid_plural "PIECE_DAYS_P {days}"
 msgstr[0] "{days} day"
 msgstr[1] "{days} days"
 
-#: common/format.py:15
+#: common/format.py:17
 #, python-brace-format
 msgid "PIECE_HOURS_S {hours}"
 msgid_plural "PIECE_HOURS_P {hours}"
 msgstr[0] "{hours} hour"
 msgstr[1] "{hours} hours"
 
-#: common/format.py:16
+#: common/format.py:18
 #, python-brace-format
 msgid "PIECE_MINUTES_S {minutes}"
 msgid_plural "PIECE_MINUTES_P {minutes}"
 msgstr[0] "{minutes} minute"
 msgstr[1] "{minutes} minutes"
 
-#: common/format.py:25
+#: common/format.py:29
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
 msgstr "Will start in {remainder}."
 
-#: common/format.py:28
+#: common/format.py:32
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
 msgstr "In progress, will end in {remainder}."
 
-#: common/format.py:31
+#: common/format.py:35
 msgid "PIECE_ADMIN_START_STATUS_FINISHED"
 msgstr "The event is over."
 
-#: common/format.py:36
+#: common/format.py:42
 msgid "PIECE_DATETIME_JAN"
 msgstr "January"
 
-#: common/format.py:38
+#: common/format.py:44
 msgid "PIECE_DATETIME_FEB"
 msgstr "February"
 
-#: common/format.py:40
+#: common/format.py:46
 msgid "PIECE_DATETIME_MAR"
 msgstr "March"
 
-#: common/format.py:42
+#: common/format.py:48
 msgid "PIECE_DATETIME_APR"
 msgstr "April"
 
-#: common/format.py:44
+#: common/format.py:50
 msgid "PIECE_DATETIME_MAY"
 msgstr "May"
 
-#: common/format.py:46
+#: common/format.py:52
 msgid "PIECE_DATETIME_JUN"
 msgstr "June"
 
-#: common/format.py:48
+#: common/format.py:54
 msgid "PIECE_DATETIME_JUL"
 msgstr "July"
 
-#: common/format.py:50
+#: common/format.py:56
 msgid "PIECE_DATETIME_AUG"
 msgstr "August"
 
-#: common/format.py:52
+#: common/format.py:58
 msgid "PIECE_DATETIME_SEP"
 msgstr "September"
 
-#: common/format.py:54
+#: common/format.py:60
 msgid "PIECE_DATETIME_OCT"
 msgstr "October"
 
-#: common/format.py:56
+#: common/format.py:62
 msgid "PIECE_DATETIME_NOV"
 msgstr "November"
 
-#: common/format.py:58
+#: common/format.py:64
 msgid "PIECE_DATETIME_DEC"
 msgstr "December"
+
+#: common/format.py:77
+#, python-brace-format
+msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
+msgstr "{month} {day} {hour:02d}:{minute:02d}"
+
+#: common/format.py:98
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
+msgstr ""
+"❔<strong>{participant_label}</strong>\n"
+"        No check-ins"
+
+#: common/format.py:102
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
+msgstr ""
+"🏆<strong>{participant_label}</strong>\n"
+"        Finish!  Result time: <strong>{result_time}</strong>"
+
+#: common/format.py:108
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_name} {distance}"
+msgstr ""
+"✅<strong>{participant_label}</strong>\n"
+"        {control_name} ({distance} km) {checkin_time}"
+
+#: common/format.py:114
+#, python-brace-format
+msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_name} {distance}"
+msgstr ""
+"❌<strong>{control_name} {participant_label}</strong>\n"
+"        Abandoned at {control_name} ({distance} km)"
 
 #: common/remote.py:76
 msgid "DNF"
@@ -225,82 +258,49 @@ msgstr "Please enter frame plate number of a participant."
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: users/public.py:73
-#, python-brace-format
-msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
-msgstr "{month} {day} {hour:02d}:{minute:02d}"
-
-#: users/public.py:85
-#, python-brace-format
-msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_name} {frame_plate_number}"
-msgstr ""
-"❔<strong>{frame_plate_number} {participant_name}</strong>\n"
-"        No check-ins"
-
-#: users/public.py:90
-#, python-brace-format
-msgid "LAST_KNOWN_STATUS_FINISH {participant_name} {frame_plate_number} {result_time}"
-msgstr ""
-"🏆<strong>{frame_plate_number} {participant_name}</strong>\n"
-"        Finish!  Result time: <strong>{result_time}</strong>"
-
-#: users/public.py:97
-#, python-brace-format
-msgid "LAST_KNOWN_STATUS_OK {participant_name} {frame_plate_number} {checkin_time} {control_name} {distance}"
-msgstr ""
-"✅<strong>{frame_plate_number} {participant_name}</strong>\n"
-"        {control_name} ({distance} km) {checkin_time}"
-
-#: users/public.py:105
-#, python-brace-format
-msgid "LAST_KNOWN_STATUS_ABANDONED {participant_name} {frame_plate_number} {control_name} {distance}"
-msgstr ""
-"❌<strong>{control_name} {participant_name}</strong>\n"
-"        Abandoned at {control_name} ({distance} km)"
-
-#: users/public.py:113
+#: users/public.py:72
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Your list of participants is empty."
 
-#: users/public.py:115
+#: users/public.py:74
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"
 msgstr "Here is your list of participants:"
 
-#: users/public.py:128
+#: users/public.py:87
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: users/public.py:131
+#: users/public.py:90
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: users/public.py:135
+#: users/public.py:94
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is added to your list."
 
-#: users/public.py:139
+#: users/public.py:98
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: users/public.py:143
+#: users/public.py:102
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
 msgstr "The participant #{frame_plate_number} ({full_name}) is removed from your list."
 
-#: users/public.py:157
+#: users/public.py:116
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: users/public.py:185
+#: users/public.py:144
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: users/public.py:186
+#: users/public.py:145
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: users/public.py:187
+#: users/public.py:146
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
