@@ -70,6 +70,12 @@ def control_name(trans, control_id: str):
     return state.controls()[control_id]["name"][trans.info()["language"]] if control_id else ""
 
 
+def control_label(trans, control: state.Control) -> str:
+    """Format a label for a control, which is control name and the distance to it"""
+
+    return trans.gettext("CONTROL_LABEL {name} {distance}").format(distance=control.distance, name=control.name(trans))
+
+
 def checkin_day_and_time(trans, timestamp: str) -> str:
     """Format a datetime object in checkin format, which is month, day, hour and minute"""
 
@@ -98,20 +104,20 @@ def participant_status(trans, participant: state.Participant) -> str:
         return trans.gettext("LAST_KNOWN_STATUS_UNKNOWN {participant_label}").format(
             participant_label=participant.label)
 
-    if state.controls()[participant.last_known_control_id]["finish"]:
+    control = state.Control(participant.last_known_control_id)
+
+    if control.finish:
         return trans.gettext("LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}").format(
             participant_label=participant.label,
             result_time=result_time(participant.last_known_checkin_time))
 
     if participant.last_known_checkin_time:
         return trans.gettext(
-            "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_name} {distance}").format(
-                control_name=control_name(trans, participant.last_known_control_id),
+            "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}").format(
+                control_label=control_label(trans, control),
                 checkin_time=checkin_day_and_time(trans, participant.last_known_checkin_time),
-                distance=state.controls()[participant.last_known_control_id]["distance"],
                 participant_label=participant.label)
 
-    return trans.gettext("LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_name} {distance}").format(
-        control_name=control_name(trans, participant.last_known_control_id),
-        distance=state.controls()[participant.last_known_control_id]["distance"],
+    return trans.gettext("LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}").format(
+        control_label=control_label(trans, control),
         participant_label=participant.label)

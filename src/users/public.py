@@ -73,7 +73,7 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
     else:
         message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"))
         for frame_plate_number in sorted(state.subscriptions()[tg_id]["numbers"], key=lambda n: int(n)):
-            message.append(format.participant_status(trans, state.participant(frame_plate_number)))
+            message.append(format.participant_status(trans, state.Participant(frame_plate_number)))
     await context.bot.send_message(chat_id=user.id, text="\n".join(message))
 
 
@@ -92,7 +92,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
             state.add_subscription(user, update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participant(frame_plate_number).name))
+                frame_plate_number=frame_plate_number, full_name=state.Participant(frame_plate_number).name))
     elif context.user_data["action"] == COMMAND_REMOVE:
         if not state.has_subscription(str(user.id), frame_plate_number):
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_NOT_SUBSCRIBED"))
@@ -100,7 +100,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
             state.remove_subscription(str(user.id), update.message.text)
             await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
                 "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}").format(
-                frame_plate_number=frame_plate_number, full_name=state.participant(frame_plate_number).name))
+                frame_plate_number=frame_plate_number, full_name=state.Participant(frame_plate_number).name))
     else:
         logging.error("Unknown action {}".format(context.user_data["action"]))
 

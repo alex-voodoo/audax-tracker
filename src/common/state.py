@@ -21,6 +21,25 @@ _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE
     "last_successful_fetch", "name", "numbers", "participants", "start", "subscriptions")
 
 
+class Control:
+    """Read-only convenience wrapper that describes a control"""
+
+    _DISTANCE = "distance"
+    _FINISH = "finish"
+    _NAME = "name"
+
+    def __init__(self, control_id: str):
+        data = _state[_CONTROLS][control_id]
+
+        self._name = data[self._NAME]
+
+        self.distance = data[self._DISTANCE]
+        self.finish = data[self._FINISH]
+
+    def name(self, trans):
+        return self._name[trans.info()["language"]]
+
+
 class Participant:
     """Read-only convenience wrapper that describes a participant"""
 
@@ -159,13 +178,6 @@ def set_participants(new_value: dict) -> None:
     _save()
 
 
-def participant(frame_plate_number: str) -> Participant:
-    if frame_plate_number not in _state[_PARTICIPANTS]:
-        return None
-
-    return Participant(frame_plate_number)
-
-
 def subscriptions() -> dict:
     _maybe_load()
     return _state[_SUBSCRIPTIONS]
@@ -210,7 +222,7 @@ def maybe_set_participant_last_known_status(frame_plate_number: str, control_id:
 
     global _state
 
-    p = participant(frame_plate_number)
+    p = Participant(frame_plate_number)
     if (p.last_known_control_id and p.last_known_control_id != control_id and
             p.last_known_checkin_time and checkin_time < p.last_known_checkin_time):
         logging.info(f"Ignoring checkin of participant {frame_plate_number} at control {control_id} at {checkin_time} "

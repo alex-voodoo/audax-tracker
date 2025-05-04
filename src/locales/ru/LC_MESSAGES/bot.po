@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-04 16:58+0200\n"
+"POT-Creation-Date: 2025-05-04 17:50+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -134,38 +134,43 @@ msgstr "ноября"
 msgid "PIECE_DATETIME_DEC"
 msgstr "декабря"
 
-#: common/format.py:77
+#: common/format.py:76
+#, python-brace-format
+msgid "CONTROL_LABEL {name} {distance}"
+msgstr "{name} ({distance} км)"
+
+#: common/format.py:83
 #, python-brace-format
 msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
 msgstr "{day} {month} {hour:02d}:{minute:02d}"
 
-#: common/format.py:98
+#: common/format.py:104
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
 msgstr ""
 "❔ <strong>{participant_label}</strong>\n"
 "        Нет отметок"
 
-#: common/format.py:102
+#: common/format.py:110
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
 msgstr ""
 "🏆 <strong>{participant_label}</strong>\n"
 "        Финиш! Итоговое время: <strong>{result_time}</strong>"
 
-#: common/format.py:108
+#: common/format.py:116
 #, python-brace-format
-msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_name} {distance}"
+msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅ <strong>{participant_label}</strong>\n"
-"        КП {control_name} ({distance} км) {checkin_time}"
+"        КП {control_label} {checkin_time}"
 
-#: common/format.py:114
+#: common/format.py:121
 #, python-brace-format
-msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_name} {distance}"
+msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""
 "❌ <strong>{participant_label}</strong>\n"
-"        Сход на КП {control_name} ({distance} км)"
+"        Сход на КП {control_label}"
 
 #: common/remote.py:76
 msgid "DNF"

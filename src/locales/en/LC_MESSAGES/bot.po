@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-04 16:58+0200\n"
+"POT-Creation-Date: 2025-05-04 17:50+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -131,38 +131,43 @@ msgstr "November"
 msgid "PIECE_DATETIME_DEC"
 msgstr "December"
 
-#: common/format.py:77
+#: common/format.py:76
+#, python-brace-format
+msgid "CONTROL_LABEL {name} {distance}"
+msgstr "{name} ({distance} km)"
+
+#: common/format.py:83
 #, python-brace-format
 msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
 msgstr "{month} {day} {hour:02d}:{minute:02d}"
 
-#: common/format.py:98
+#: common/format.py:104
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
 msgstr ""
 "❔<strong>{participant_label}</strong>\n"
 "        No check-ins"
 
-#: common/format.py:102
+#: common/format.py:110
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
 msgstr ""
 "🏆<strong>{participant_label}</strong>\n"
 "        Finish!  Result time: <strong>{result_time}</strong>"
 
-#: common/format.py:108
+#: common/format.py:116
 #, python-brace-format
-msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_name} {distance}"
+msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅<strong>{participant_label}</strong>\n"
-"        {control_name} ({distance} km) {checkin_time}"
+"        {control_label} {checkin_time}"
 
-#: common/format.py:114
+#: common/format.py:121
 #, python-brace-format
-msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_name} {distance}"
+msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""
-"❌<strong>{control_name} {participant_label}</strong>\n"
-"        Abandoned at {control_name} ({distance} km)"
+"❌<strong>{participant_label}</strong>\n"
+"        Abandoned at {control_label}"
 
 #: common/remote.py:76
 msgid "DNF"
