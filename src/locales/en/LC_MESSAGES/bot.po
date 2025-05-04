@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-04 17:50+0200\n"
+"POT-Creation-Date: 2025-05-04 18:42+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -131,38 +131,38 @@ msgstr "November"
 msgid "PIECE_DATETIME_DEC"
 msgstr "December"
 
-#: common/format.py:76
+#: common/format.py:72
 #, python-brace-format
 msgid "CONTROL_LABEL {name} {distance}"
 msgstr "{name} ({distance} km)"
 
-#: common/format.py:83
+#: common/format.py:79
 #, python-brace-format
 msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
 msgstr "{month} {day} {hour:02d}:{minute:02d}"
 
-#: common/format.py:104
+#: common/format.py:100
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
 msgstr ""
 "❔<strong>{participant_label}</strong>\n"
 "        No check-ins"
 
-#: common/format.py:110
+#: common/format.py:106
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
 msgstr ""
 "🏆<strong>{participant_label}</strong>\n"
 "        Finish!  Result time: <strong>{result_time}</strong>"
 
-#: common/format.py:116
+#: common/format.py:112
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅<strong>{participant_label}</strong>\n"
 "        {control_label} {checkin_time}"
 
-#: common/format.py:121
+#: common/format.py:117
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""
@@ -173,19 +173,14 @@ msgstr ""
 msgid "DNF"
 msgstr "abandoned"
 
-#: common/remote.py:89
-#, python-brace-format
-msgid "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}"
-msgstr "#{frame_plate_number} ({full_name}): {control_name} ({distance} km), {time}"
-
-#: common/remote.py:96
+#: common/remote.py:90
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
 
-#: common/remote.py:103
+#: common/remote.py:97
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "An error occurred when fetching updates.  Stopped sending notifications."
 
@@ -308,4 +303,3 @@ msgstr "remove a participant from your list"
 #: users/public.py:146
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
-

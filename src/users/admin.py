@@ -36,8 +36,8 @@ def _general_status(result_message: str = None) -> str:
     lang = trans.info()["language"]
 
     def format_stats() -> str:
-        controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", len(state.controls())).format(
-            count=len(state.controls()))
+        controls = trans.ngettext("PIECE_CONTROLS_S {count}", "PIECE_CONTROLS_P {count}", state.control_count()).format(
+            count=state.control_count())
         participants = trans.ngettext("PIECE_PARTICIPANTS_S {count}", "PIECE_PARTICIPANTS_P {count}",
                                       state.participant_count()).format(count=state.participant_count())
 

@@ -139,9 +139,9 @@ def event_finish() -> datetime.datetime:
     return datetime.datetime.fromisoformat(_state[_EVENT][_FINISH]) if _EVENT in _state else None
 
 
-def controls() -> dict:
+def control_count() -> int:
     _maybe_load()
-    return _state[_CONTROLS]
+    return len(_state[_CONTROLS])
 
 
 def set_controls(new_value: list) -> None:
@@ -217,23 +217,28 @@ def has_participant(frame_plate_number: str) -> bool:
     return frame_plate_number in _state[_PARTICIPANTS]
 
 
-def maybe_set_participant_last_known_status(frame_plate_number: str, control_id: str, checkin_time: str):
-    """Set last known status of the participant iff there is no newer status already"""
+def maybe_set_participant_last_known_status(frame_plate_number: str, control_id: str, checkin_time: str) -> bool:
+    """Set last known status of the participant iff there is no newer status already
+
+    Returns whether the state was changed.
+    """
 
     global _state
 
     p = Participant(frame_plate_number)
     if (p.last_known_control_id and p.last_known_control_id != control_id and
-            p.last_known_checkin_time and checkin_time < p.last_known_checkin_time):
+            p.last_known_checkin_time and checkin_time is not None and checkin_time < p.last_known_checkin_time):
         logging.info(f"Ignoring checkin of participant {frame_plate_number} at control {control_id} at {checkin_time} "
                      f"because they have checked in at control {p.last_known_control_id} "
                      f"at {p.last_known_checkin_time} (more recently)")
-        return
-
-    logging.info(f"New last known checkin time for participant {frame_plate_number} is {p.last_known_checkin_time}")
+        return False
 
     global _state
     _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CONTROL] = control_id
     _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CHECKIN_TIME] = checkin_time
 
+    logging.info(f"New last known checkin time for participant {frame_plate_number} is {checkin_time}")
+
     _save()
+
+    return True

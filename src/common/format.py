@@ -66,10 +66,6 @@ def month_name(trans, month_index: int) -> str:
         raise RuntimeError("Wrong month number: ".format(month_index))
 
 
-def control_name(trans, control_id: str):
-    return state.controls()[control_id]["name"][trans.info()["language"]] if control_id else ""
-
-
 def control_label(trans, control: state.Control) -> str:
     """Format a label for a control, which is control name and the distance to it"""
 

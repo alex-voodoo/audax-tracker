@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 import requests
 from telegram.ext import ContextTypes, Application
 
-from . import i18n, settings, state
+from . import format, i18n, settings, state
 
 
 _periodic_fetching_job = None
@@ -84,14 +84,8 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
                 frame_plate_number = update["frame_plate_number"]
                 control_id = str(update["control"])
                 checkin_time = update["checkin_time"]
-                control = state.controls()[control_id]
-                checkins.append(trans.gettext(
-                    "MESSAGE_UPDATE_ENTRY {control_name} {distance} {frame_plate_number} {full_name} {time}").format(
-                    control_name=control["name"][lang], distance=control["distance"],
-                    frame_plate_number=frame_plate_number,
-                    full_name=state.participant(update["frame_plate_number"]).name,
-                    time=convert(trans, checkin_time)))
-                state.maybe_set_participant_last_known_status(frame_plate_number, control_id, checkin_time)
+                if state.maybe_set_participant_last_known_status(frame_plate_number, control_id, checkin_time):
+                    checkins.append(format.participant_status(trans, state.Participant(frame_plate_number)))
 
             await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
                 entries="\n".join(checkins)))
