@@ -68,11 +68,11 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
         message.append(format.event_status(trans))
         message.append("")
 
-    if tg_id not in state.subscriptions():
+    if not state.has_subscriber(tg_id):
         message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_EMPTY"))
     else:
         message.append(trans.gettext("MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"))
-        for frame_plate_number in sorted(state.subscriptions()[tg_id]["numbers"], key=lambda n: int(n)):
+        for frame_plate_number in state.Subscription(tg_id).numbers:
             message.append(format.participant_status(trans, state.Participant(frame_plate_number)))
     await context.bot.send_message(chat_id=user.id, text="\n".join(message))
 

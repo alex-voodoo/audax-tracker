@@ -2,9 +2,7 @@
 Calls to the remote endpoint
 """
 
-import datetime
 import logging
-from zoneinfo import ZoneInfo
 
 import requests
 from telegram.ext import ContextTypes, Application
@@ -65,21 +63,15 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
         logging.info("Got data response from the remote endpoint, preparing updates for the subscribers.")
         packages = {}
         for update in response["updates"]:
-            for tg_id, subscription in state.subscriptions().items():
-                if update["frame_plate_number"] in subscription["numbers"]:
-                    if tg_id not in packages:
-                        packages[tg_id] = []
-                    packages[tg_id].append(update)
-
-        def convert(tr, t: str) -> str:
-            if not t:
-                return tr.gettext("DNF")
-            return datetime.datetime.fromisoformat(t).astimezone(ZoneInfo(settings.TIME_ZONE)).strftime("%d %B %H:%M")
+            for subscription in state.subscriptions():
+                if update["frame_plate_number"] in subscription.numbers:
+                    if subscription.tg_id not in packages:
+                        packages[subscription.tg_id] = []
+                    packages[subscription.tg_id].append(update)
 
         for tg_id, updates in packages.items():
             checkins = []
-            lang = state.subscriptions()[tg_id]["lang"]
-            trans = i18n.for_lang(lang)
+            trans = i18n.for_lang(state.Subscription(tg_id).lang)
             for update in sorted(updates, key=lambda u: f"{u['frame_plate_number']}-{u['checkin_time']}"):
                 frame_plate_number = update["frame_plate_number"]
                 control_id = str(update["control"])

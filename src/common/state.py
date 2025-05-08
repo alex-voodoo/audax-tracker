@@ -7,6 +7,7 @@ import gettext
 import json
 import logging
 import pathlib
+from collections.abc import Iterator
 
 from telegram import User
 
@@ -74,6 +75,17 @@ class Participant:
     @property
     def label(self) -> str:
         return f"{self.frame_plate_number} {self.name}"
+
+
+class Subscription:
+    """Read-only convenience wrapper that describes a subscription"""
+
+    def __init__(self, tg_id: str):
+        data = _state[_SUBSCRIPTIONS][tg_id]
+
+        self.tg_id = tg_id
+        self.lang = data[_LANG]
+        self.numbers = sorted(data[_NUMBERS], key=lambda n: int(n))
 
 
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
@@ -178,9 +190,11 @@ def set_participants(new_value: dict) -> None:
     _save()
 
 
-def subscriptions() -> dict:
+def subscriptions() -> Iterator:
     _maybe_load()
-    return _state[_SUBSCRIPTIONS]
+
+    for tg_id in _state[_SUBSCRIPTIONS]:
+        yield Subscription(tg_id)
 
 
 def add_subscription(user: User, frame_plate_number: str) -> None:
@@ -207,6 +221,10 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     if not _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         del _state[_SUBSCRIPTIONS][tg_id]
     _save()
+
+
+def has_subscriber(tg_id: str) -> bool:
+    return tg_id in _state[_SUBSCRIPTIONS]
 
 
 def has_subscription(tg_id: str, frame_plate_number: str) -> bool:
