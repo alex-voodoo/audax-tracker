@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-08 21:30+0200\n"
+"POT-Creation-Date: 2025-05-09 20:00+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -277,8 +277,8 @@ msgstr "Участник с таким номером уже есть в ваш�
 
 #: users/public.py:94
 #, python-brace-format
-msgid "MESSAGE_SUBSCRIPTION_ADDED {frame_plate_number} {full_name}"
-msgstr "Участник №{frame_plate_number} ({full_name}) добавлен в ваш список."
+msgid "MESSAGE_SUBSCRIPTION_ADDED {participant_label}"
+msgstr "<strong>{participant_label}</strong> теперь в вашем списке."
 
 #: users/public.py:98
 msgid "MESSAGE_NOT_SUBSCRIBED"
@@ -286,8 +286,8 @@ msgstr "Участника с таким номером нет в вашем с�
 
 #: users/public.py:102
 #, python-brace-format
-msgid "MESSAGE_SUBSCRIPTION_REMOVED {frame_plate_number} {full_name}"
-msgstr "Участник №{frame_plate_number} ({full_name}) удалён из вашего списка."
+msgid "MESSAGE_SUBSCRIPTION_REMOVED {participant_label}"
+msgstr "<strong>{participant_label}</strong> больше не в вашем списке."
 
 #: users/public.py:116
 msgid "MESSAGE_ABORT"
@@ -304,3 +304,4 @@ msgstr "удалить участника из вашего списка"
 #: users/public.py:146
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
+
