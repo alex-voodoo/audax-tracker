@@ -118,6 +118,13 @@ async def abort_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE)
     return ConversationHandler.END
 
 
+def on_participants_removed(updates) -> None:
+    """Notify subscribers about their subscriptions that were removed"""
+
+    # TODO: implement this
+    pass
+
+
 def init(application: Application) -> None:
     """Do what is necessary for the subscriber's interface at the initial step (before starting the polling)"""
 
@@ -133,6 +140,8 @@ def init(application: Application) -> None:
                                                                    received_frame_plate_number)]},
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
     application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
+
+    state.set_on_participant_removed(on_participants_removed)
 
 
 async def post_init(application: Application) -> None:

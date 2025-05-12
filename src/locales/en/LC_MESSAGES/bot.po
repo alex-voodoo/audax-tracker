@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-09 20:00+0200\n"
+"POT-Creation-Date: 2025-05-12 10:10+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -288,15 +288,15 @@ msgstr "<strong>{participant_label}</strong> has been removed from your list."
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: users/public.py:144
+#: users/public.py:153
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: users/public.py:145
+#: users/public.py:154
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: users/public.py:146
+#: users/public.py:155
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 

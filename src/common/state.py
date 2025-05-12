@@ -22,6 +22,9 @@ _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE
     "checkin_time", "control", "controls", "event", "feed_status", "finish", "is_fetching", "lang", "last_known_status",
     "last_successful_fetch", "name", "numbers", "participants", "start", "subscriptions")
 
+# If set, called back when participants are removed from the state
+_on_participant_removed = None
+
 
 class Control:
     """Read-only convenience wrapper that describes a control"""
@@ -61,8 +64,8 @@ class Event:
 class Participant:
     """Read-only convenience wrapper that describes a participant"""
 
-    def __init__(self, frame_plate_number: str):
-        data = _state[_PARTICIPANTS][frame_plate_number]
+    def __init__(self, frame_plate_number: str, other_data=None):
+        data = other_data if other_data else _state[_PARTICIPANTS][frame_plate_number]
 
         self.frame_plate_number = frame_plate_number
         self.name = data[_NAME]
@@ -185,7 +188,24 @@ def set_participants(new_value: dict) -> None:
             _LAST_KNOWN_STATUS: get_last_known_status(frame_plate_number)
         }
 
-    # TODO: Handle removing participants that had subscribers.  Probably the subscribers should be notified.
+    removed_participants = {k: Participant(k, v) for k, v in old_participants.items() if k not in _state[_PARTICIPANTS]}
+    if not removed_participants:
+        logging.info("No participants were removed")
+    else:
+        logging.info(f"Removed participants: {removed_participants}")
+
+        packages = {}
+        for subscription in subscriptions():
+            for k, v in removed_participants.items():
+                if k in subscription.numbers:
+                    if subscription.tg_id not in packages:
+                        packages[subscription.tg_id] = []
+                    packages[subscription.tg_id].append(v)
+
+                    remove_subscription(subscription.tg_id, k)
+
+        if _on_participant_removed:
+            _on_participant_removed(packages)
 
     _save()
 
@@ -207,6 +227,8 @@ def add_subscription(user: User, frame_plate_number: str) -> None:
         _LANG] = user.language_code if user.language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE
     if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].append(frame_plate_number)
+
+    logging.info(f"Subscribed Telegram user {tg_id} at participant {frame_plate_number}")
     _save()
 
 
@@ -218,8 +240,12 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         return
     _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].remove(frame_plate_number)
+    logging.info(f"Unsubscribed Telegram user {tg_id} from participant {frame_plate_number}")
+
     if not _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         del _state[_SUBSCRIPTIONS][tg_id]
+        logging.info(f"Telegram user {tg_id} has no more subscriptions; removed them completely")
+
     _save()
 
 
@@ -260,3 +286,9 @@ def maybe_set_participant_last_known_status(frame_plate_number: str, control_id:
     _save()
 
     return True
+
+
+def set_on_participant_removed(handler) -> None:
+    global _on_participant_removed
+
+    _on_participant_removed = handler
