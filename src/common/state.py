@@ -23,7 +23,7 @@ _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE
     "last_successful_fetch", "name", "numbers", "participants", "start", "subscriptions")
 
 # If set, called back when participants are removed from the state
-_on_participant_removed = None
+_on_participants_removed = None
 
 
 class Control:
@@ -202,10 +202,12 @@ def set_participants(new_value: dict) -> None:
                         packages[subscription.tg_id] = []
                     packages[subscription.tg_id].append(v)
 
-                    remove_subscription(subscription.tg_id, k)
+        if _on_participants_removed:
+            _on_participants_removed(packages)
 
-        if _on_participant_removed:
-            _on_participant_removed(packages)
+        for tg_id, participant_list in packages.items():
+            for participant in participant_list:
+                remove_subscription(tg_id, participant.frame_plate_number)
 
     _save()
 
@@ -288,7 +290,7 @@ def maybe_set_participant_last_known_status(frame_plate_number: str, control_id:
     return True
 
 
-def set_on_participant_removed(handler) -> None:
-    global _on_participant_removed
+def set_on_participants_removed(handler) -> None:
+    global _on_participants_removed
 
-    _on_participant_removed = handler
+    _on_participants_removed = handler

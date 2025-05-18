@@ -148,7 +148,7 @@ def init(application: Application) -> None:
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
     application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
 
-    state.set_on_participant_removed(on_participants_removed)
+    state.set_on_participants_removed(on_participants_removed)
 
 
 async def post_init(application: Application) -> None:
