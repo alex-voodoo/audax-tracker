@@ -25,3 +25,9 @@ TIME_ZONE = "UTC"
 #
 # Fetching interval in minutes.  Default is 5.
 FETCHING_INTERVAL_MINUTES = 5
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Event information
+#
+# URL of the page where the list of participants is published.  Default is empty.
+EVENT_PARTICIPANT_LIST_URL = ""

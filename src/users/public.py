@@ -17,8 +17,8 @@ TYPING_FRAME_PLATE_NUMBER = 1
 async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Welcome the user and show them the selection of options"""
 
-    message = update.effective_message
-    user = message.from_user
+    user = update.effective_user
+    trans = i18n.trans(user)
 
     if settings.DEVELOPER_CHAT_ID == 0:
         logging.info("Welcoming user {username} (chat ID {chat_id}), is this the admin?".format(username=user.username,
@@ -29,7 +29,14 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         logging.info("Welcoming user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
 
-    await message.reply_text(i18n.trans(user).gettext("MESSAGE_START"))
+    message = [trans.gettext("MESSAGE_START")]
+
+    if settings.EVENT_PARTICIPANT_LIST_URL:
+        message.append("")
+        message.append(trans.gettext("MESSAGE_START_PARTICIPANTS_LIST {url}").format(
+            url=settings.EVENT_PARTICIPANT_LIST_URL))
+
+    await update.effective_message.reply_text("\n".join(message))
 
 
 async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

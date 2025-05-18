@@ -30,6 +30,9 @@ if "TIME_ZONE" in _user_settings:
 if "FETCHING_INTERVAL_MINUTES" in _user_settings:
     FETCHING_INTERVAL_MINUTES = _user_settings["FETCHING_INTERVAL_MINUTES"]
 
+if "EVENT_PARTICIPANT_LIST_URL" in _user_settings:
+    EVENT_PARTICIPANT_LIST_URL = _user_settings["EVENT_PARTICIPANT_LIST_URL"]
+
 
 def source_path() -> str:
     """Return path to the file from which the settings were loaded"""
