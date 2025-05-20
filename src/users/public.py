@@ -159,4 +159,5 @@ async def post_init(application: Application) -> None:
     await application.bot.set_my_commands(
         [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
          BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
-         BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS"))])
+         BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS")),
+         BotCommand(command=COMMAND_HELP, description=trans.gettext("COMMAND_DESCRIPTION_HELP"))])
