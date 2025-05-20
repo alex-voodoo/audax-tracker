@@ -161,10 +161,12 @@ def init(application: Application) -> None:
 async def post_init(application: Application) -> None:
     """Do what is necessary for the subscriber's interface at the post-initial step (after starting the polling)"""
 
-    trans = i18n.default()
+    for lang in settings.SUPPORTED_LANGUAGES:
+        trans = i18n.for_lang(lang)
 
-    await application.bot.set_my_commands(
-        [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
-         BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
-         BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS")),
-         BotCommand(command=COMMAND_HELP, description=trans.gettext("COMMAND_DESCRIPTION_HELP"))])
+        await application.bot.set_my_commands(
+            [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
+             BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
+             BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS")),
+             BotCommand(command=COMMAND_HELP, description=trans.gettext("COMMAND_DESCRIPTION_HELP"))],
+            language_code=lang)
