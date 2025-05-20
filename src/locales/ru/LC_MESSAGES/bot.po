@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-20 17:58+0200\n"
+"POT-Creation-Date: 2025-05-20 19:55+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -241,76 +241,80 @@ msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Рассылка остановлена"
 
 #: users/public.py:32
-msgid "MESSAGE_START"
+#, python-brace-format
+msgid "MESSAGE_START {max_subscription_count}"
 msgstr ""
 "Я сообщу, когда выбранные вами участники прибудут на КП.\n"
 "\n"
-"Вы можете воспользоваться следующими командами:\n"
+"В вашем списке может быть до {max_subscription_count} участников. Для управления списком воспользуйтесь следующими командами:\n"
 "\n"
 "/add - добавить участника в список\n"
 "/remove - убрать участника из списка\n"
-"/status - показать статус всех участников из вашего списка"
+"/status - показать статус всех участников из списка"
 
-#: users/public.py:36
+#: users/public.py:37
 #, python-brace-format
 msgid "MESSAGE_START_PARTICIPANTS_LIST {url}"
 msgstr "Стартовые номера участников опубликованы на <a href='{url}'>веб-сайте мероприятия</a>."
 
-#: users/public.py:46
+#: users/public.py:50
+msgid "MESSAGE_MAX_SUBSCRIPTION_COUNT_REACHED"
+msgstr "В вашем списке уже максимально возможное число участников. Чтобы добавить нового участника, удалите одну из существующих подписок."
+
+#: users/public.py:53
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: users/public.py:57
+#: users/public.py:64
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Введите нарамный номер участника:"
 
-#: users/public.py:79
+#: users/public.py:86
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Ваш список участников пуст."
 
-#: users/public.py:81
+#: users/public.py:88
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"
 msgstr "В вашем списке сейчас следующие участники:"
 
-#: users/public.py:94
+#: users/public.py:101
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "Участник с таким номером не зарегистрирован."
 
-#: users/public.py:97
+#: users/public.py:104
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "Участник с таким номером уже есть в вашем списке."
 
-#: users/public.py:101
+#: users/public.py:108
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {participant_label}"
 msgstr "<strong>{participant_label}</strong> теперь в вашем списке."
 
-#: users/public.py:105
+#: users/public.py:112
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "Участника с таким номером нет в вашем списке."
 
-#: users/public.py:109
+#: users/public.py:116
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {participant_label}"
 msgstr "<strong>{participant_label}</strong> больше не в вашем списке."
 
-#: users/public.py:123
+#: users/public.py:130
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: users/public.py:160
+#: users/public.py:167
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: users/public.py:161
+#: users/public.py:168
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: users/public.py:162
+#: users/public.py:169
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 
-#: users/public.py:163
+#: users/public.py:170
 msgid "COMMAND_DESCRIPTION_HELP"
 msgstr "объяснить, что я могу делать"
-

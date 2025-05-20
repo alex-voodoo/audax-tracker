@@ -33,6 +33,9 @@ if "FETCHING_INTERVAL_MINUTES" in _user_settings:
 if "EVENT_PARTICIPANT_LIST_URL" in _user_settings:
     EVENT_PARTICIPANT_LIST_URL = _user_settings["EVENT_PARTICIPANT_LIST_URL"]
 
+if "MAX_SUBSCRIPTION_COUNT" in _user_settings:
+    MAX_SUBSCRIPTION_COUNT = _user_settings["MAX_SUBSCRIPTION_COUNT"]
+
 
 def source_path() -> str:
     """Return path to the file from which the settings were loaded"""

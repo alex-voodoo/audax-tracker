@@ -29,7 +29,8 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         logging.info("Welcoming user {username} (chat ID {chat_id})".format(username=user.username, chat_id=user.id))
 
-    message = [trans.gettext("MESSAGE_START")]
+    message = [trans.gettext("MESSAGE_START {max_subscription_count}").format(
+        max_subscription_count=settings.MAX_SUBSCRIPTION_COUNT)]
 
     if settings.EVENT_PARTICIPANT_LIST_URL:
         message.append("")
@@ -42,8 +43,14 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
 async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Start the conversation to add a participant to the user's list"""
 
-    await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
-        "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"))
+    user_id = update.effective_user.id
+    trans = i18n.trans(update.effective_user)
+
+    if len(state.Subscription(str(user_id)).numbers) >= settings.MAX_SUBSCRIPTION_COUNT:
+        await context.bot.send_message(chat_id=user_id, text=trans.gettext("MESSAGE_MAX_SUBSCRIPTION_COUNT_REACHED"))
+        return ConversationHandler.END
+
+    await context.bot.send_message(chat_id=user_id, text=trans.gettext("MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"))
 
     context.user_data["action"] = COMMAND_ADD
 
