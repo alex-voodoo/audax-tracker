@@ -49,7 +49,7 @@ class Event:
     """Read-only convenience wrapper that describes the event"""
 
     def __init__(self):
-        data = _state[_EVENT]
+        data = _state[_EVENT] if _EVENT in _state else {}
 
         self.start = datetime.datetime.fromisoformat(data[_START]) if _START in data else None
         self.finish = datetime.datetime.fromisoformat(data[_FINISH]) if _FINISH in data else None
