@@ -227,10 +227,16 @@ def add_subscription(user: User, frame_plate_number: str) -> None:
         _state[_SUBSCRIPTIONS][tg_id] = {_LANG: "", _NUMBERS: []}
     _state[_SUBSCRIPTIONS][tg_id][
         _LANG] = user.language_code if user.language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE
+
+    if len(_state[_SUBSCRIPTIONS][tg_id][_NUMBERS]) >= settings.MAX_SUBSCRIPTION_COUNT:
+        logging.error(f"Called add_subscription() for user {tg_id} "
+                      f"but they already have maximum number of subscriptions!")
+        return
+
     if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].append(frame_plate_number)
 
-    logging.info(f"Subscribed Telegram user {tg_id} at participant {frame_plate_number}")
+    logging.info(f"Subscribed user {tg_id} at participant {frame_plate_number}")
     _save()
 
 
@@ -242,11 +248,11 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     if frame_plate_number not in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         return
     _state[_SUBSCRIPTIONS][tg_id][_NUMBERS].remove(frame_plate_number)
-    logging.info(f"Unsubscribed Telegram user {tg_id} from participant {frame_plate_number}")
+    logging.info(f"Unsubscribed user {tg_id} from participant {frame_plate_number}")
 
     if not _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         del _state[_SUBSCRIPTIONS][tg_id]
-        logging.info(f"Telegram user {tg_id} has no more subscriptions; removed them completely")
+        logging.info(f"User {tg_id} has no more subscriptions; removed them completely")
 
     _save()
 

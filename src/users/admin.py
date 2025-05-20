@@ -83,7 +83,7 @@ async def _handle_query_admin(update: Update, context: ContextTypes.DEFAULT_TYPE
     user = query.from_user
 
     if user.id != settings.DEVELOPER_CHAT_ID:
-        logging.error("User {username} is not listed as administrator!".format(username=user.username))
+        logging.error(f"User {user.id} (username '{user.username}') is not listed as administrator!")
         return
 
     await query.answer()

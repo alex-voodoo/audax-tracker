@@ -116,7 +116,7 @@ async def received_frame_plate_number(update: Update, context: ContextTypes.DEFA
                 "MESSAGE_SUBSCRIPTION_REMOVED {participant_label}").format(
                 participant_label=state.Participant(frame_plate_number).label))
     else:
-        logging.error("Unknown action {}".format(context.user_data["action"]))
+        logging.error(f"Unknown action '{context.user_data['action']}'!")
 
     context.user_data.clear()
     return ConversationHandler.END
