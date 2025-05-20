@@ -132,6 +132,14 @@ async def abort_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE)
     return ConversationHandler.END
 
 
+async def handle_random_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle everything that was not caught by other handlers"""
+
+    user = update.effective_user
+
+    await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_UNRECOGNISED_INPUT"))
+
+
 def on_participants_removed(updates) -> None:
     """Notify subscribers about their subscriptions that were removed"""
 
@@ -154,6 +162,7 @@ def init(application: Application) -> None:
                                                                    received_frame_plate_number)]},
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
     application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
+    application.add_handler(MessageHandler(filters.TEXT & (~ filters.COMMAND), handle_random_input))
 
     state.set_on_participants_removed(on_participants_removed)
 
