@@ -3,6 +3,7 @@ String helper functions for formatting pieces of messages
 """
 
 import datetime
+import logging
 from zoneinfo import ZoneInfo
 
 from common import settings, state
@@ -80,7 +81,7 @@ def control_label(trans, control: state.Control) -> str:
 def checkin_day_and_time(trans, timestamp: str) -> str:
     """Format a datetime object in checkin format, which is month, day, hour and minute"""
 
-    checkin_time = datetime.datetime.fromisoformat(timestamp)
+    checkin_time = datetime.datetime.fromisoformat(timestamp).astimezone(ZoneInfo(settings.TIME_ZONE))
     return trans.gettext("CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}").format(day=checkin_time.day,
                                                                                        hour=checkin_time.hour,
                                                                                        minute=checkin_time.minute,
@@ -93,7 +94,7 @@ def result_time(timestamp: str) -> str:
     """Calculate difference with event start and format result as hours and minutes"""
 
     delta = datetime.datetime.fromisoformat(timestamp) - state.Event().start
-    hours = int(delta.seconds / 3600)
+    hours = int(delta.seconds / 3600) + delta.days * 24
     minutes = int(delta.seconds % 3600 / 60)
     return f"{hours}:{minutes:02d}"
 

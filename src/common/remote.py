@@ -5,6 +5,7 @@ Calls to the remote endpoint
 import logging
 
 import requests
+from telegram.error import Forbidden
 from telegram.ext import ContextTypes, Application
 
 from . import format, i18n, settings, state
@@ -79,8 +80,13 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
                 if state.maybe_set_participant_last_known_status(frame_plate_number, control_id, checkin_time):
                     checkins.append(format.participant_status(trans, state.Participant(frame_plate_number)))
 
-            await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
-                entries="\n".join(checkins)))
+            try:
+                await context.bot.send_message(chat_id=tg_id,
+                                               text=trans.gettext("MESSAGE_CHECKIN_UPDATE {entries}").format(
+                                                                  entries="\n".join(checkins)))
+            except Forbidden as e:
+                logging.error(f"Got Forbidden when sending an update to user {tg_id}!  Removing their subscription.")
+                state.remove_subscriber(tg_id)
 
         state.set_last_successful_fetch(response["next_since"])
 

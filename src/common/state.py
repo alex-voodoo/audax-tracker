@@ -84,11 +84,11 @@ class Subscription:
     """Read-only convenience wrapper that describes a subscription"""
 
     def __init__(self, tg_id: str):
-        data = _state[_SUBSCRIPTIONS][tg_id]
+        data = _state[_SUBSCRIPTIONS][tg_id] if tg_id in _state[_SUBSCRIPTIONS] else {}
 
         self.tg_id = tg_id
-        self.lang = data[_LANG]
-        self.numbers = sorted(data[_NUMBERS], key=lambda n: int(n))
+        self.lang = data[_LANG] if _LANG in data else settings.DEFAULT_LANGUAGE
+        self.numbers = sorted(data[_NUMBERS], key=lambda n: int(n)) if _NUMBERS in data else []
 
 
 # State object.  Loaded once from the file, then used in-memory, saved to the file when changed.
@@ -253,6 +253,17 @@ def remove_subscription(tg_id: str, frame_plate_number: str) -> None:
     if not _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]:
         del _state[_SUBSCRIPTIONS][tg_id]
         logging.info(f"User {tg_id} has no more subscriptions; removed them completely")
+
+    _save()
+
+
+def remove_subscriber(tg_id: str) -> None:
+    global _state
+
+    if tg_id not in _state[_SUBSCRIPTIONS]:
+        return
+    del _state[_SUBSCRIPTIONS][tg_id]
+    logging.info(f"User {tg_id} is removed with all their subscriptions")
 
     _save()
 

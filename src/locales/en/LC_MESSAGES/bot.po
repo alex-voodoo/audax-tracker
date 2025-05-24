@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-20 21:59+0200\n"
+"POT-Creation-Date: 2025-05-24 14:33+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -48,135 +48,135 @@ msgstr "Report for error <code>{error_uuid}</code>"
 msgid "MESSAGE_DM_INTERNAL_ERROR {error_uuid}"
 msgstr "An internal error <code>{error_uuid}</code> occurred.  The administrator is notified about this problem."
 
-#: common/format.py:16
+#: common/format.py:17
 #, python-brace-format
 msgid "PIECE_DAYS_S {days}"
 msgid_plural "PIECE_DAYS_P {days}"
 msgstr[0] "{days} day"
 msgstr[1] "{days} days"
 
-#: common/format.py:17
+#: common/format.py:18
 #, python-brace-format
 msgid "PIECE_HOURS_S {hours}"
 msgid_plural "PIECE_HOURS_P {hours}"
 msgstr[0] "{hours} hour"
 msgstr[1] "{hours} hours"
 
-#: common/format.py:18
+#: common/format.py:19
 #, python-brace-format
 msgid "PIECE_MINUTES_S {minutes}"
 msgid_plural "PIECE_MINUTES_P {minutes}"
 msgstr[0] "{minutes} minute"
 msgstr[1] "{minutes} minutes"
 
-#: common/format.py:34
+#: common/format.py:35
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_BEFORE_START {remainder}"
 msgstr "Will start in {remainder}."
 
-#: common/format.py:37
+#: common/format.py:38
 #, python-brace-format
 msgid "PIECE_ADMIN_START_STATUS_IN_AIR {remainder}"
 msgstr "In progress, will end in {remainder}."
 
-#: common/format.py:40
+#: common/format.py:41
 msgid "PIECE_ADMIN_START_STATUS_FINISHED"
 msgstr "The event is over."
 
-#: common/format.py:47
+#: common/format.py:48
 msgid "PIECE_DATETIME_JAN"
 msgstr "January"
 
-#: common/format.py:49
+#: common/format.py:50
 msgid "PIECE_DATETIME_FEB"
 msgstr "February"
 
-#: common/format.py:51
+#: common/format.py:52
 msgid "PIECE_DATETIME_MAR"
 msgstr "March"
 
-#: common/format.py:53
+#: common/format.py:54
 msgid "PIECE_DATETIME_APR"
 msgstr "April"
 
-#: common/format.py:55
+#: common/format.py:56
 msgid "PIECE_DATETIME_MAY"
 msgstr "May"
 
-#: common/format.py:57
+#: common/format.py:58
 msgid "PIECE_DATETIME_JUN"
 msgstr "June"
 
-#: common/format.py:59
+#: common/format.py:60
 msgid "PIECE_DATETIME_JUL"
 msgstr "July"
 
-#: common/format.py:61
+#: common/format.py:62
 msgid "PIECE_DATETIME_AUG"
 msgstr "August"
 
-#: common/format.py:63
+#: common/format.py:64
 msgid "PIECE_DATETIME_SEP"
 msgstr "September"
 
-#: common/format.py:65
+#: common/format.py:66
 msgid "PIECE_DATETIME_OCT"
 msgstr "October"
 
-#: common/format.py:67
+#: common/format.py:68
 msgid "PIECE_DATETIME_NOV"
 msgstr "November"
 
-#: common/format.py:69
+#: common/format.py:70
 msgid "PIECE_DATETIME_DEC"
 msgstr "December"
 
-#: common/format.py:77
+#: common/format.py:78
 #, python-brace-format
 msgid "CONTROL_LABEL {name} {distance}"
 msgstr "{name} ({distance} km)"
 
-#: common/format.py:84
+#: common/format.py:85
 #, python-brace-format
 msgid "CHECKIN_DATE_AND_TIME {month} {day} {hour} {minute}"
 msgstr "{month} {day} {hour:02d}:{minute:02d}"
 
-#: common/format.py:105
+#: common/format.py:106
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_UNKNOWN {participant_label}"
 msgstr ""
 "❔<strong>{participant_label}</strong>\n"
 "        No check-ins"
 
-#: common/format.py:111
+#: common/format.py:112
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
 msgstr ""
 "🏆<strong>{participant_label}</strong>\n"
 "        Finish!  Result time: <strong>{result_time}</strong>"
 
-#: common/format.py:117
+#: common/format.py:118
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅<strong>{participant_label}</strong>\n"
 "        {control_label} {checkin_time}"
 
-#: common/format.py:122
+#: common/format.py:123
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""
 "❌<strong>{participant_label}</strong>\n"
 "        Abandoned at {control_label}"
 
-#: common/remote.py:82
+#: common/remote.py:85
 #, python-brace-format
 msgid "MESSAGE_CHECKIN_UPDATE {entries}"
 msgstr ""
 "News about participants in your list:\n"
 "{entries}"
 
-#: common/remote.py:89
+#: common/remote.py:95
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED_AFTER_FAILURE"
 msgstr "An error occurred when fetching updates.  Stopped sending notifications."
 
