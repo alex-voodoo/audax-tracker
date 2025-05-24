@@ -73,7 +73,7 @@ async def periodic_fetch_data_and_notify_subscribers(context: ContextTypes.DEFAU
         for tg_id, updates in packages.items():
             checkins = []
             trans = i18n.for_lang(state.Subscription(tg_id).lang)
-            for update in sorted(updates, key=lambda u: f"{u['frame_plate_number']}-{u['checkin_time']}"):
+            for update in sorted(updates, key=lambda u: int(u['frame_plate_number'])):
                 frame_plate_number = update["frame_plate_number"]
                 control_id = str(update["control"])
                 checkin_time = update["checkin_time"]
