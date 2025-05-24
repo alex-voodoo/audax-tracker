@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-24 14:33+0200\n"
+"POT-Creation-Date: 2025-05-24 14:38+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -150,19 +150,19 @@ msgstr ""
 
 #: common/format.py:112
 #, python-brace-format
-msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}"
+msgid "LAST_KNOWN_STATUS_FINISH {participant_label} {checkin_time} {result_time}"
 msgstr ""
 "🏆<strong>{participant_label}</strong>\n"
-"        Finish!  Result time: <strong>{result_time}</strong>"
+"        Finished {checkin_time}!  Result time: <strong>{result_time}</strong>"
 
-#: common/format.py:118
+#: common/format.py:119
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_OK {participant_label} {checkin_time} {control_label}"
 msgstr ""
 "✅<strong>{participant_label}</strong>\n"
 "        {control_label} {checkin_time}"
 
-#: common/format.py:123
+#: common/format.py:124
 #, python-brace-format
 msgid "LAST_KNOWN_STATUS_ABANDONED {participant_label} {control_label}"
 msgstr ""

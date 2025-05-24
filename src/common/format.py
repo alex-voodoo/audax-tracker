@@ -109,7 +109,8 @@ def participant_status(trans, participant: state.Participant) -> str:
     control = state.Control(participant.last_known_control_id)
 
     if control.finish:
-        return trans.gettext("LAST_KNOWN_STATUS_FINISH {participant_label} {result_time}").format(
+        return trans.gettext("LAST_KNOWN_STATUS_FINISH {participant_label} {checkin_time} {result_time}").format(
+            checkin_time=checkin_day_and_time(trans, participant.last_known_checkin_time),
             participant_label=participant.label,
             result_time=result_time(participant.last_known_checkin_time))
 
