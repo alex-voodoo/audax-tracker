@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-24 14:38+0200\n"
+"POT-Creation-Date: 2025-05-24 17:35+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -235,7 +235,7 @@ msgstr "Started sending notifications"
 msgid "MESSAGE_ADMIN_FETCHING_STOPPED"
 msgstr "Stopped sending notifications"
 
-#: users/public.py:32
+#: users/public.py:34
 #, python-brace-format
 msgid "MESSAGE_START {max_subscription_count}"
 msgstr ""
@@ -247,74 +247,74 @@ msgstr ""
 "/remove - stop tracking a participant\n"
 "/status - show status of all participants in your list"
 
-#: users/public.py:37
+#: users/public.py:39
 #, python-brace-format
 msgid "MESSAGE_START_PARTICIPANTS_LIST {url}"
 msgstr "Participants' frame plate numbers are published at the <a href='{url}'>website of the event</a>."
 
-#: users/public.py:50
+#: users/public.py:55
 msgid "MESSAGE_MAX_SUBSCRIPTION_COUNT_REACHED"
 msgstr "Your list has reached the maximum allowed number of entries.  To add another participant, unsubscribe from one of your existing ones."
 
-#: users/public.py:53
+#: users/public.py:58
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: users/public.py:64
+#: users/public.py:73
 msgid "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"
 msgstr "Please enter frame plate number of a participant."
 
-#: users/public.py:86
+#: users/public.py:97
 msgid "MESSAGE_STATUS_SUBSCRIPTION_EMPTY"
 msgstr "Your list of participants is empty."
 
-#: users/public.py:88
+#: users/public.py:99
 msgid "MESSAGE_STATUS_SUBSCRIPTION_LIST_HEADER"
 msgstr "Here is your list of participants:"
 
-#: users/public.py:101
+#: users/public.py:112
 msgid "MESSAGE_NO_SUCH_PARTICIPANT"
 msgstr "No participant registered with such number."
 
-#: users/public.py:104
+#: users/public.py:115
 msgid "MESSAGE_ALREADY_SUBSCRIBED"
 msgstr "You have this participant in your list already."
 
-#: users/public.py:108
+#: users/public.py:119
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_ADDED {participant_label}"
 msgstr "<strong>{participant_label}</strong> has been added to your list."
 
-#: users/public.py:112
+#: users/public.py:123
 msgid "MESSAGE_NOT_SUBSCRIBED"
 msgstr "You do not have this participant in your list."
 
-#: users/public.py:116
+#: users/public.py:127
 #, python-brace-format
 msgid "MESSAGE_SUBSCRIPTION_REMOVED {participant_label}"
 msgstr "<strong>{participant_label}</strong> has been removed from your list."
 
-#: users/public.py:130
+#: users/public.py:141
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: users/public.py:140
+#: users/public.py:151
 msgid "MESSAGE_UNRECOGNISED_INPUT"
 msgstr "I do not know what to answer.  Please use commands available in the menu."
 
-#: users/public.py:177
+#: users/public.py:188
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: users/public.py:178
+#: users/public.py:189
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: users/public.py:179
+#: users/public.py:190
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
-#: users/public.py:180
+#: users/public.py:191
 msgid "COMMAND_DESCRIPTION_HELP"
 msgstr "explain what I can do"
 

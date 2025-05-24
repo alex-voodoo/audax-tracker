@@ -154,6 +154,10 @@ def set_event(new_value: dict) -> None:
     _save()
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Control API
+
+
 def control_count() -> int:
     _maybe_load()
     return len(_state[_CONTROLS])
@@ -166,9 +170,17 @@ def set_controls(new_value: list) -> None:
     _save()
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Participant API
+
+
 def participant_count() -> int:
     _maybe_load()
     return len(_state[_PARTICIPANTS])
+
+
+def has_participant(frame_plate_number: str) -> bool:
+    return frame_plate_number in _state[_PARTICIPANTS]
 
 
 def set_participants(new_value: dict) -> None:
@@ -210,6 +222,43 @@ def set_participants(new_value: dict) -> None:
                 remove_subscription(tg_id, participant.frame_plate_number)
 
     _save()
+
+
+def maybe_set_participant_last_known_status(frame_plate_number: str, control_id: str, checkin_time: str) -> bool:
+    """Set last known status of the participant iff there is no newer status already
+
+    Returns whether the state was changed.
+    """
+
+    global _state
+
+    p = Participant(frame_plate_number)
+    if (p.last_known_control_id and p.last_known_control_id != control_id and
+            p.last_known_checkin_time and checkin_time is not None and checkin_time < p.last_known_checkin_time):
+        logging.info(f"Ignoring checkin of participant {frame_plate_number} at control {control_id} at {checkin_time} "
+                     f"because they have checked in at control {p.last_known_control_id} "
+                     f"at {p.last_known_checkin_time} (more recently)")
+        return False
+
+    global _state
+    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CONTROL] = control_id
+    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CHECKIN_TIME] = checkin_time
+
+    logging.info(f"New last known checkin time for participant {frame_plate_number} is {checkin_time}")
+
+    _save()
+
+    return True
+
+
+def set_on_participants_removed(handler) -> None:
+    global _on_participants_removed
+
+    _on_participants_removed = handler
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Subscription API
 
 
 def subscriptions() -> Iterator:
@@ -276,38 +325,15 @@ def has_subscription(tg_id: str, frame_plate_number: str) -> bool:
     return tg_id in _state[_SUBSCRIPTIONS] and frame_plate_number in _state[_SUBSCRIPTIONS][tg_id][_NUMBERS]
 
 
-def has_participant(frame_plate_number: str) -> bool:
-    return frame_plate_number in _state[_PARTICIPANTS]
+def maybe_update_subscription_language(user: User) -> None:
+    """Update language of a user's subscription, if there is one"""
 
+    new_lang = user.language_code if user.language_code in settings.SUPPORTED_LANGUAGES else settings.DEFAULT_LANGUAGE
+    tg_id = str(user.id)
 
-def maybe_set_participant_last_known_status(frame_plate_number: str, control_id: str, checkin_time: str) -> bool:
-    """Set last known status of the participant iff there is no newer status already
+    if tg_id not in _state[_SUBSCRIPTIONS] or _state[_SUBSCRIPTIONS][tg_id][_LANG] == new_lang:
+        return
 
-    Returns whether the state was changed.
-    """
-
-    global _state
-
-    p = Participant(frame_plate_number)
-    if (p.last_known_control_id and p.last_known_control_id != control_id and
-            p.last_known_checkin_time and checkin_time is not None and checkin_time < p.last_known_checkin_time):
-        logging.info(f"Ignoring checkin of participant {frame_plate_number} at control {control_id} at {checkin_time} "
-                     f"because they have checked in at control {p.last_known_control_id} "
-                     f"at {p.last_known_checkin_time} (more recently)")
-        return False
-
-    global _state
-    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CONTROL] = control_id
-    _state[_PARTICIPANTS][frame_plate_number][_LAST_KNOWN_STATUS][_CHECKIN_TIME] = checkin_time
-
-    logging.info(f"New last known checkin time for participant {frame_plate_number} is {checkin_time}")
+    _state[_SUBSCRIPTIONS][tg_id][_LANG] = new_lang
 
     _save()
-
-    return True
-
-
-def set_on_participants_removed(handler) -> None:
-    global _on_participants_removed
-
-    _on_participants_removed = handler

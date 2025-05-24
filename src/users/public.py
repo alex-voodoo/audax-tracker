@@ -20,6 +20,8 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
     user = update.effective_user
     trans = i18n.trans(user)
 
+    state.maybe_update_subscription_language(user)
+
     if settings.DEVELOPER_CHAT_ID == 0:
         logging.info("Welcoming user {username} (chat ID {chat_id}), is this the admin?".format(username=user.username,
                                                                                                 chat_id=user.id))
@@ -43,14 +45,17 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
 async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Start the conversation to add a participant to the user's list"""
 
-    user_id = update.effective_user.id
-    trans = i18n.trans(update.effective_user)
+    user = update.effective_user
+    trans = i18n.trans(user)
+    tg_id = user.id
 
-    if len(state.Subscription(str(user_id)).numbers) >= settings.MAX_SUBSCRIPTION_COUNT:
-        await context.bot.send_message(chat_id=user_id, text=trans.gettext("MESSAGE_MAX_SUBSCRIPTION_COUNT_REACHED"))
+    state.maybe_update_subscription_language(user)
+
+    if len(state.Subscription(str(tg_id)).numbers) >= settings.MAX_SUBSCRIPTION_COUNT:
+        await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_MAX_SUBSCRIPTION_COUNT_REACHED"))
         return ConversationHandler.END
 
-    await context.bot.send_message(chat_id=user_id, text=trans.gettext("MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"))
+    await context.bot.send_message(chat_id=tg_id, text=trans.gettext("MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_SUBSCRIBE"))
 
     context.user_data["action"] = COMMAND_ADD
 
@@ -60,7 +65,11 @@ async def handle_command_add(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def handle_command_remove(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Start the conversation to remove a participant from the user's list"""
 
-    await context.bot.send_message(chat_id=update.effective_user.id, text=i18n.trans(update.effective_user).gettext(
+    user = update.effective_user
+
+    state.maybe_update_subscription_language(user)
+
+    await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext(
         "MESSAGE_TYPE_FRAME_PLATE_NUMBER_TO_UNSUBSCRIBE"))
 
     context.user_data["action"] = COMMAND_REMOVE
@@ -74,6 +83,8 @@ async def handle_command_status(update: Update, context: ContextTypes.DEFAULT_TY
     user = update.effective_user
     trans = i18n.trans(user)
     tg_id = str(user.id)
+
+    state.maybe_update_subscription_language(user)
 
     message = []
     event = state.Event()
@@ -136,6 +147,8 @@ async def handle_random_input(update: Update, context: ContextTypes.DEFAULT_TYPE
     """Handle everything that was not caught by other handlers"""
 
     user = update.effective_user
+
+    state.maybe_update_subscription_language(user)
 
     await context.bot.send_message(chat_id=user.id, text=i18n.trans(user).gettext("MESSAGE_UNRECOGNISED_INPUT"))
 
