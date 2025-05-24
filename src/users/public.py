@@ -143,7 +143,7 @@ async def abort_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE)
     return ConversationHandler.END
 
 
-async def handle_random_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_unrecognised_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle everything that was not caught by other handlers"""
 
     user = update.effective_user
@@ -175,7 +175,7 @@ def init(application: Application) -> None:
                                                                    received_frame_plate_number)]},
                                                 fallbacks=[MessageHandler(filters.ALL, abort_conversation)]))
     application.add_handler(CommandHandler(COMMAND_STATUS, handle_command_status))
-    application.add_handler(MessageHandler(filters.TEXT & (~ filters.COMMAND), handle_random_input))
+    application.add_handler(MessageHandler(filters.TEXT, handle_unrecognised_input))
 
     state.set_on_participants_removed(on_participants_removed)
 
