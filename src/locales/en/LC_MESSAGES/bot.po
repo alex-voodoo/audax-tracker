@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-24 17:35+0200\n"
+"POT-Creation-Date: 2025-06-26 23:25+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: en\n"
@@ -247,7 +247,7 @@ msgstr ""
 "/remove - stop tracking a participant\n"
 "/status - show status of all participants in your list"
 
-#: users/public.py:39
+#: users/public.py:40
 #, python-brace-format
 msgid "MESSAGE_START_PARTICIPANTS_LIST {url}"
 msgstr "Participants' frame plate numbers are published at the <a href='{url}'>website of the event</a>."
@@ -298,23 +298,23 @@ msgstr "<strong>{participant_label}</strong> has been removed from your list."
 msgid "MESSAGE_ABORT"
 msgstr "Cancelled.  Please select a command."
 
-#: users/public.py:151
+#: users/public.py:153
 msgid "MESSAGE_UNRECOGNISED_INPUT"
 msgstr "I do not know what to answer.  Please use commands available in the menu."
 
-#: users/public.py:188
+#: users/public.py:190 users/public.py:197
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "add a participant to your list"
 
-#: users/public.py:189
+#: users/public.py:191 users/public.py:198
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "remove a participant from your list"
 
-#: users/public.py:190
+#: users/public.py:192 users/public.py:199
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "show your list"
 
-#: users/public.py:191
+#: users/public.py:193 users/public.py:200
 msgid "COMMAND_DESCRIPTION_HELP"
 msgstr "explain what I can do"
 

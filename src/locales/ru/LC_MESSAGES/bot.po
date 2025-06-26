@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-05-24 17:35+0200\n"
+"POT-Creation-Date: 2025-06-26 23:25+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -252,7 +252,7 @@ msgstr ""
 "/remove - убрать участника из списка\n"
 "/status - показать статус всех участников из списка"
 
-#: users/public.py:39
+#: users/public.py:40
 #, python-brace-format
 msgid "MESSAGE_START_PARTICIPANTS_LIST {url}"
 msgstr "Стартовые номера участников опубликованы на <a href='{url}'>веб-сайте мероприятия</a>."
@@ -303,23 +303,23 @@ msgstr "<strong>{participant_label}</strong> больше не в вашем с�
 msgid "MESSAGE_ABORT"
 msgstr "Отменено. Выберите команду."
 
-#: users/public.py:151
+#: users/public.py:153
 msgid "MESSAGE_UNRECOGNISED_INPUT"
 msgstr "Я не знаю, что ответить. Пожалуйста, воспользуйтесь командами, доступными в меню."
 
-#: users/public.py:188
+#: users/public.py:190 users/public.py:197
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: users/public.py:189
+#: users/public.py:191 users/public.py:198
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: users/public.py:190
+#: users/public.py:192 users/public.py:199
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 
-#: users/public.py:191
+#: users/public.py:193 users/public.py:200
 msgid "COMMAND_DESCRIPTION_HELP"
 msgstr "объяснить, что я могу делать"
 

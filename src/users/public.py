@@ -34,10 +34,10 @@ async def handle_command_start(update: Update, context: ContextTypes.DEFAULT_TYP
     message = [trans.gettext("MESSAGE_START {max_subscription_count}").format(
         max_subscription_count=settings.MAX_SUBSCRIPTION_COUNT)]
 
-    if settings.EVENT_PARTICIPANT_LIST_URL:
+    event = state.Event()
+    if event.participant_list_url:
         message.append("")
-        message.append(trans.gettext("MESSAGE_START_PARTICIPANTS_LIST {url}").format(
-            url=settings.EVENT_PARTICIPANT_LIST_URL))
+        message.append(trans.gettext("MESSAGE_START_PARTICIPANTS_LIST {url}").format(url=event.participant_list_url))
 
     await update.effective_message.reply_text("\n".join(message))
 

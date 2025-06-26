@@ -27,12 +27,6 @@ TIME_ZONE = "UTC"
 FETCHING_INTERVAL_MINUTES = 5
 
 # ----------------------------------------------------------------------------------------------------------------------
-# Event information
-#
-# URL of the page where the list of participants is published.  Default is empty.
-EVENT_PARTICIPANT_LIST_URL = ""
-
-# ----------------------------------------------------------------------------------------------------------------------
 # Other settings
 #
 # Telegram limits the maximum size of messages.  To not surpass it, the bot limits number of subscriptions for a single

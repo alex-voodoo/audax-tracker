@@ -91,6 +91,7 @@ Returned data:
   - `name` is a dictionary where keys are language codes and values are names of the event in that language
   - `start` is the date and time of the start (when the participants are allowed to the distance) in ISO format
   - `finish` is the date and time of the finish (when the finish control closes) in ISO format
+  - `participant_list_url` is the URL where the user can see the full list of participants (can be empty)
 - `controls` is a dictionary where keys are control IDs and values are control descriptions.  Each control description is a dictionary that has the following fields:
   - `name` is a dictionary where keys are language codes and values are names of the control in that language
   - `distance` is the distance to the control from the start
@@ -107,7 +108,8 @@ Sample response:
           'ru': 'Чуйский Тракт 2025'
         },
         'start': '2025-07-04T02:00:00+00:00',
-        'finish': '2025-07-07T20:14:00+00:00'
+        'finish': '2025-07-07T20:14:00+00:00',
+        'participant_list_url': 'https://chuyskytrakt.ru/who_will_come/'
     },
     'controls': {
         '1': {

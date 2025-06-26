@@ -18,9 +18,9 @@ _STATE_FILENAME = "/var/local/audax-tracker/state.json" if settings.SERVICE_MODE
 
 # Keys used in the state object
 (_CHECKIN_TIME, _CONTROL, _CONTROLS, _EVENT, _FEED_STATUS, _FINISH, _IS_FETCHING, _LANG, _LAST_KNOWN_STATUS,
- _LAST_SUCCESSFUL_FETCH, _NAME, _NUMBERS, _PARTICIPANTS, _START, _SUBSCRIPTIONS) = (
+ _LAST_SUCCESSFUL_FETCH, _NAME, _NUMBERS, _PARTICIPANT_LIST_URL, _PARTICIPANTS, _START, _SUBSCRIPTIONS) = (
     "checkin_time", "control", "controls", "event", "feed_status", "finish", "is_fetching", "lang", "last_known_status",
-    "last_successful_fetch", "name", "numbers", "participants", "start", "subscriptions")
+    "last_successful_fetch", "name", "numbers", "participant_list_url", "participants", "start", "subscriptions")
 
 # If set, called back when participants are removed from the state
 _on_participants_removed = None
@@ -56,6 +56,8 @@ class Event:
         self._name = data[_NAME] if _NAME in data else None
 
         self.valid = self.start is not None and self.finish is not None and self._name is not None
+
+        self.participant_list_url = data[_PARTICIPANT_LIST_URL]
 
     def name(self, trans: gettext.GNUTranslations):
         return self._name[trans.info()["language"]] if self._name is not None else ""
