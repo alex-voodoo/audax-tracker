@@ -57,7 +57,7 @@ class Event:
 
         self.valid = self.start is not None and self.finish is not None and self._name is not None
 
-        self.participant_list_url = data[_PARTICIPANT_LIST_URL]
+        self.participant_list_url = data[_PARTICIPANT_LIST_URL] if _PARTICIPANT_LIST_URL in data else None
 
     def name(self, trans: gettext.GNUTranslations):
         return self._name[trans.info()["language"]] if self._name is not None else ""
