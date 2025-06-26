@@ -37,4 +37,4 @@ EVENT_PARTICIPANT_LIST_URL = ""
 #
 # Telegram limits the maximum size of messages.  To not surpass it, the bot limits number of subscriptions for a single
 # user.  Default is 20.
-MAX_SUBSCRIPTION_COUNT: 20
+MAX_SUBSCRIPTION_COUNT = 20
