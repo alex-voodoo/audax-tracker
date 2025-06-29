@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
-"POT-Creation-Date: 2025-06-26 23:25+0200\n"
+"POT-Creation-Date: 2025-06-29 23:06+0200\n"
 "PO-Revision-Date: 2025-03-06 12:37+0100\n"
 "Last-Translator: Alexander Dunaev <alexander.dunaev@gmail.com>\n"
 "Language: ru\n"
@@ -307,19 +307,23 @@ msgstr "Отменено. Выберите команду."
 msgid "MESSAGE_UNRECOGNISED_INPUT"
 msgstr "Я не знаю, что ответить. Пожалуйста, воспользуйтесь командами, доступными в меню."
 
-#: users/public.py:190 users/public.py:197
+#: users/public.py:190
 msgid "COMMAND_DESCRIPTION_ADD"
 msgstr "добавить участника в ваш список"
 
-#: users/public.py:191 users/public.py:198
+#: users/public.py:191
 msgid "COMMAND_DESCRIPTION_REMOVE"
 msgstr "удалить участника из вашего списка"
 
-#: users/public.py:192 users/public.py:199
+#: users/public.py:192
 msgid "COMMAND_DESCRIPTION_STATUS"
 msgstr "показать ваш список"
 
-#: users/public.py:193 users/public.py:200
+#: users/public.py:193
 msgid "COMMAND_DESCRIPTION_HELP"
 msgstr "объяснить, что я могу делать"
+
+#: users/public.py:197
+msgid "BOT_DESCRIPTION"
+msgstr "Я сообщу, когда выбранные вами участники прибудут на КП."
 

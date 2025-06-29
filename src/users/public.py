@@ -1,7 +1,7 @@
 """
 Public interface (functions available to every user)
 """
-
+import gettext
 import logging
 
 from telegram import BotCommand, Update
@@ -183,18 +183,22 @@ def init(application: Application) -> None:
 async def post_init(application: Application) -> None:
     """Do what is necessary for the subscriber's interface at the post-initial step (after starting the polling)"""
 
+    async def set_bot_strings(translator: gettext.GNUTranslations, language_code: str):
+        bot = application.bot
+
+        await bot.set_my_commands(
+            [BotCommand(command=COMMAND_ADD, description=translator.gettext("COMMAND_DESCRIPTION_ADD")),
+             BotCommand(command=COMMAND_REMOVE, description=translator.gettext("COMMAND_DESCRIPTION_REMOVE")),
+             BotCommand(command=COMMAND_STATUS, description=translator.gettext("COMMAND_DESCRIPTION_STATUS")),
+             BotCommand(command=COMMAND_HELP, description=translator.gettext("COMMAND_DESCRIPTION_HELP"))],
+            language_code=language_code)
+        # TODO: Find a way to have instance-specific strings in configs?
+        # await bot.set_my_name(trans.gettext("BOT_NAME"), language_code=language_code)
+        await bot.set_my_description(trans.gettext("BOT_DESCRIPTION"), language_code=language_code)
+
     for lang in settings.SUPPORTED_LANGUAGES:
         trans = i18n.for_lang(lang)
+        await set_bot_strings(trans, lang)
 
-        await application.bot.set_my_commands(
-            [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
-             BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
-             BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS")),
-             BotCommand(command=COMMAND_HELP, description=trans.gettext("COMMAND_DESCRIPTION_HELP"))],
-            language_code=lang)
         if lang == settings.DEFAULT_LANGUAGE:
-            await application.bot.set_my_commands(
-                [BotCommand(command=COMMAND_ADD, description=trans.gettext("COMMAND_DESCRIPTION_ADD")),
-                 BotCommand(command=COMMAND_REMOVE, description=trans.gettext("COMMAND_DESCRIPTION_REMOVE")),
-                 BotCommand(command=COMMAND_STATUS, description=trans.gettext("COMMAND_DESCRIPTION_STATUS")),
-                 BotCommand(command=COMMAND_HELP, description=trans.gettext("COMMAND_DESCRIPTION_HELP"))])
+            await set_bot_strings(trans, None)
